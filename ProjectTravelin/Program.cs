@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Options;
-using Project3Travelin.Services.CategoryServices;
-using Project3Travelin.Services.CommentServices;
-using Project3Travelin.Services.TourServices;
-using Project3Travelin.Settings;
+using ProjectTravelin.Services.CategoryServices;
+using ProjectTravelin.Services.CommentServices;
+using ProjectTravelin.Services.TourServices;
+using ProjectTravelin.Settings;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

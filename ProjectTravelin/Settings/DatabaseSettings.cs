@@ -1,4 +1,4 @@
-﻿namespace Project3Travelin.Settings
+﻿namespace ProjectTravelin.Settings
 {
     public class DatabaseSettings : IDatabaseSettings
     {

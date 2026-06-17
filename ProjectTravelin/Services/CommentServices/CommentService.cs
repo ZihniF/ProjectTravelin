@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using MongoDB.Driver;
-using Project3Travelin.Dtos.CommentDtos;
-using Project3Travelin.Entities;
-using Project3Travelin.Settings;
+using ProjectTravelin.Dtos.CommentDtos;
+using ProjectTravelin.Entities;
+using ProjectTravelin.Settings;
 
-namespace Project3Travelin.Services.CommentServices
+namespace ProjectTravelin.Services.CommentServices
 {
     public class CommentService : ICommentService
     {

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using MongoDB.Driver;
-using Project3Travelin.Dtos.CategoryDtos;
-using Project3Travelin.Entities;
-using Project3Travelin.Settings;
+using ProjectTravelin.Dtos.CategoryDtos;
+using ProjectTravelin.Entities;
+using ProjectTravelin.Settings;
 
-namespace Project3Travelin.Services.CategoryServices
+namespace ProjectTravelin.Services.CategoryServices
 {
     public class CategoryService : ICategoryService
     {

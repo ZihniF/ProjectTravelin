@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using MongoDB.Driver;
-using Project3Travelin.Dtos.TourDtos;
-using Project3Travelin.Entities;
-using Project3Travelin.Settings;
+using ProjectTravelin.Dtos.TourDtos;
+using ProjectTravelin.Entities;
+using ProjectTravelin.Settings;
 
-namespace Project3Travelin.Services.TourServices
+namespace ProjectTravelin.Services.TourServices
 {
     public class TourService : ITourService
     {

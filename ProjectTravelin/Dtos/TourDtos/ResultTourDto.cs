@@ -1,4 +1,4 @@
-﻿namespace Project3Travelin.Dtos.TourDtos
+﻿namespace ProjectTravelin.Dtos.TourDtos
 {
     public class ResultTourDto
     {

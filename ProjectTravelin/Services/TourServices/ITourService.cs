@@ -1,6 +1,6 @@
-﻿using Project3Travelin.Dtos.TourDtos;
+﻿using ProjectTravelin.Dtos.TourDtos;
 
-namespace Project3Travelin.Services.TourServices
+namespace ProjectTravelin.Services.TourServices
 {
     public interface ITourService
     {

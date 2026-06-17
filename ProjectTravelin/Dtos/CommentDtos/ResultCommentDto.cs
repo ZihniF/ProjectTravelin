@@ -1,4 +1,4 @@
-﻿namespace Project3Travelin.Dtos.CommentDtos
+﻿namespace ProjectTravelin.Dtos.CommentDtos
 {
     public class ResultCommentDto
     {

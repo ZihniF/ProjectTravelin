@@ -7,10 +7,60 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\travelin\.sass-cache\01526bb22c7666d84be9712e3f8b137c7a33ae43\style.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\01526bb22c7666d84be9712e3f8b137c7a33ae43\_default.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\01526bb22c7666d84be9712e3f8b137c7a33ae43\_variable.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\01ff328a530509c5ddebee6c34b56a175a6c5cc5\style.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\01ff328a530509c5ddebee6c34b56a175a6c5cc5\_default.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\01ff328a530509c5ddebee6c34b56a175a6c5cc5\_variable.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\1a73e0af50fd39a3e1eca6e8160614d9a92cbe6b\style.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\1a73e0af50fd39a3e1eca6e8160614d9a92cbe6b\_default.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\1a73e0af50fd39a3e1eca6e8160614d9a92cbe6b\_variable.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\3418c4b9516c81662fef2c20766bebb448f18872\style.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\3418c4b9516c81662fef2c20766bebb448f18872\_default.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\3418c4b9516c81662fef2c20766bebb448f18872\_variable.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\44f4aa16e7d42305346b388b4a035651fca856b1\blog.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\44f4aa16e7d42305346b388b4a035651fca856b1\style.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\44f4aa16e7d42305346b388b4a035651fca856b1\variable.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\44f4aa16e7d42305346b388b4a035651fca856b1\_blog.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\44f4aa16e7d42305346b388b4a035651fca856b1\_default.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\44f4aa16e7d42305346b388b4a035651fca856b1\_variable.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\4815f2201a4ee63ad36e3bc77d11f51694a594ca\style.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\4815f2201a4ee63ad36e3bc77d11f51694a594ca\_default.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\4815f2201a4ee63ad36e3bc77d11f51694a594ca\_variable.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\54fea84f4ee536963e6a5fcd70779215fe028e0f\style.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\54fea84f4ee536963e6a5fcd70779215fe028e0f\_default.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\54fea84f4ee536963e6a5fcd70779215fe028e0f\_variable.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\5ac125f2cff505a1ba942d866c020b3e05553b4c\style.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\5ac125f2cff505a1ba942d866c020b3e05553b4c\_default.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\5ac125f2cff505a1ba942d866c020b3e05553b4c\_variable.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\7c3bce8b2fd8d2beae544bba5b29ebadcf1b6c97\rtl.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\7c3bce8b2fd8d2beae544bba5b29ebadcf1b6c97\style.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\7c3bce8b2fd8d2beae544bba5b29ebadcf1b6c97\_default.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\7c3bce8b2fd8d2beae544bba5b29ebadcf1b6c97\_variable.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\9b6687ff5bc2504ea629edeff20ee9276ab71940\style.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\9b6687ff5bc2504ea629edeff20ee9276ab71940\_default.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\9b6687ff5bc2504ea629edeff20ee9276ab71940\_variable.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\a4a9075eb571024d9ea9679f625fa9c50675f59f\style.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\a4a9075eb571024d9ea9679f625fa9c50675f59f\_default.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\a4a9075eb571024d9ea9679f625fa9c50675f59f\_variable.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\af2bc719ca8236cc1f717aa6a24e6cc4c36ab814\style.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\af2bc719ca8236cc1f717aa6a24e6cc4c36ab814\_default.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\af2bc719ca8236cc1f717aa6a24e6cc4c36ab814\_variable.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\bbdab5b0ae459ce4564faafb8945891b36d74546\style.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\bbdab5b0ae459ce4564faafb8945891b36d74546\_default.scssc" />
+    <None Include="wwwroot\travelin\.sass-cache\bbdab5b0ae459ce4564faafb8945891b36d74546\_variable.scssc" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="MongoDB.Bson" Version="3.9.0" />
     <PackageReference Include="MongoDB.Driver" Version="3.9.0" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.30.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ViewComponents\" />
   </ItemGroup>
 
 </Project>

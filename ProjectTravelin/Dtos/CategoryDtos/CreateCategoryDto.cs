@@ -1,4 +1,4 @@
-﻿namespace Project3Travelin.Dtos.CategoryDtos
+﻿namespace ProjectTravelin.Dtos.CategoryDtos
 {
     public class CreateCategoryDto
     {

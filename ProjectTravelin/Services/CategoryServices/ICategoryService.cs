@@ -1,6 +1,6 @@
-﻿using Project3Travelin.Dtos.CategoryDtos;
+﻿using ProjectTravelin.Dtos.CategoryDtos;
 
-namespace Project3Travelin.Services.CategoryServices
+namespace ProjectTravelin.Services.CategoryServices
 {
     public interface ICategoryService
     {
@@ -9,7 +9,5 @@ namespace Project3Travelin.Services.CategoryServices
         Task UpdateCategoryAsync(UpdateCategoryDto updateCategoryDto);
         Task DeleteCategoryAsync(string id);
         Task<GetCategoryByIdDto> GetCategoryByIdAsync(string id);
-
-
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Project3Travelin.Entities
+﻿namespace ProjectTravelin.Entities
 {
     public class Category
     {

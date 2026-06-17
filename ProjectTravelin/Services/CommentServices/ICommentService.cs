@@ -1,6 +1,6 @@
-﻿using Project3Travelin.Dtos.CommentDtos;
+﻿using ProjectTravelin.Dtos.CommentDtos;
 
-namespace Project3Travelin.Services.CommentServices
+namespace ProjectTravelin.Services.CommentServices
 {
     public interface ICommentService
     {
