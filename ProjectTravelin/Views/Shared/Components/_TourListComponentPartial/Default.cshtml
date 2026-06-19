@@ -35,7 +35,7 @@
                             <small>@item.DayNight</small>
                             <h3 class="mb-1"><a href="tour-single.html">@item.Title</a></h3>
                             <h6 class="theme mb-0"><i class="icon-location-pin"></i> @item.Country</h6>
-                            <p class="mt-4 mb-0">taking safety measures<br><a href="#"><span class="theme">Ücretsiz İptal</span></a></p>
+                            <p class="mt-4 mb-0">@item.Description<br><a href="#"><span class="theme">Ücretsiz İptal</span></a></p>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3">
@@ -59,8 +59,23 @@
                 </div>
             </div>
             }
-            <div class="text-center">
-                <a href="#" class="nir-btn">Load More <i class="fa fa-long-arrow-alt-right"></i></a>
+            <div class="text-center mt-4">
+                @if (ViewBag.currentPage > 1)
+                {
+                    <a href="?page=@(ViewBag.currentPage-1)" class="nir-btn mt-2">
+                        <i class="fa fa-long-arrow-alt-left"></i> Önceki
+                    </a>
+                }
+                @for (int i = 1; i <= ViewBag.totalPages; i++)
+                {
+                    <a href="?page=@i" class="nir-btn me-1 @(i == ViewBag.currentPage ? "active" : "")">@i</a>
+                }
+                @if (ViewBag.currentPage < ViewBag.totalPages)
+                {
+                    <a href="?page=@(ViewBag.currentPage + 1)" class="nir-btn ms-2">
+                        Sonraki <i class="fa fa-long-arrow-alt-right"></i>
+                    </a>
+                }
             </div>
         </div>
     </div>
