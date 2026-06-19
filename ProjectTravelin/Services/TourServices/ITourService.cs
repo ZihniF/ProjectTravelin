@@ -9,5 +9,6 @@ namespace ProjectTravelin.Services.TourServices
         Task UpdateTourAsync(UpdateTourDto updateTourDto);
         Task DeleteTourAsync(string id);
         Task<GetTourByIdDto> GetTourByIdAsync(string id);
+       
     }
 }
