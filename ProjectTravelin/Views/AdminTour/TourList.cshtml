@@ -559,7 +559,7 @@
                             </td>
                             <td data-label="İşlemler">
                                 <div class="action-group">
-                                    <a asp-action="Edit" asp-route-id="@item.TourId"
+                                    <a asp-action="UpdateTour" asp-route-id="@item.TourId"
                                        class="btn-action btn-edit"
                                        aria-label="@item.Title turunu düzenle"
                                        title="Düzenle">
@@ -635,7 +635,7 @@
         function confirmDelete(tourId, tourTitle) {
             document.getElementById('deleteModalBody').textContent =
                 '"' + tourTitle + '" adlı tur kalıcı olarak silinecek. Bu işlem geri alınamaz.';
-            document.getElementById('deleteForm').action = '/Tours/Delete/' + tourId;
+            document.getElementById('deleteForm').action = '/AdminTour/DeleteTour/' + tourId;
             new bootstrap.Modal(document.getElementById('deleteModal')).show();
         }
     </script>

@@ -13,7 +13,7 @@ namespace ProjectTravelin.Controllers
             _tourService = tourService;
         }
 
-        public async Task< IActionResult> TourList()
+        public async Task<IActionResult> TourList()
         {
             var values = await _tourService.GetAllTourAsync();
             return View(values);
@@ -27,12 +27,28 @@ namespace ProjectTravelin.Controllers
 
         public async Task<IActionResult> CreateTour(CreateTourDto _createTourDto)
         {
-            if (ModelState.IsValid)
-            {
-                await _tourService.CreateTourAsync(_createTourDto);
-                return RedirectToAction("TourList");
-            }
-            return View(_createTourDto);
+            await _tourService.CreateTourAsync(_createTourDto);
+            return RedirectToAction("TourList");
+        }
+
+        public async Task<IActionResult> DeleteTour(string id)
+        {
+            await _tourService.DeleteTourAsync(id);
+            return RedirectToAction("TourList");
+        }
+
+        public async Task<IActionResult> UpdateTour(string id)
+        {
+            var value = await _tourService.GetTourByIdAsync(id);
+            return View(value);
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> UpdateTour(UpdateTourDto updateTourDto)
+        {
+            await _tourService.UpdateTourAsync(updateTourDto);
+            return RedirectToAction("TourList");
         }
     }
 }
