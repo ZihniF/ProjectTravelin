@@ -1,0 +1,585 @@
+﻿@model CreateCommentDto
+@{
+    Layout = null;
+    ViewData["Title"] = "Yorum Ekle";
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yorum Ekle</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+            :root {
+                --bg-primary: #0d0f14;
+                --bg-card: #161a23;
+                --bg-input: #1e2330;
+                --accent: #f5a623;
+                --accent-light: #ffc85a;
+                --text-primary: #f0ede8;
+                --text-muted: #7a8296;
+                --border: #2a2f3d;
+                --success: #3ecf8e;
+                --error: #ff5e6c;
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: 'DM Sans', sans-serif;
+                background-color: var(--bg-primary);
+                color: var(--text-primary);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 40px 16px;
+                background-image: radial-gradient(ellipse at 20% 50%, rgba(245, 166, 35, 0.06) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(62, 207, 142, 0.04) 0%, transparent 50%);
+            }
+
+            .comment-wrapper {
+                width: 100%;
+                max-width: 680px;
+            }
+
+            .page-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: rgba(245, 166, 35, 0.12);
+                border: 1px solid rgba(245, 166, 35, 0.25);
+                color: var(--accent-light);
+                font-size: 12px;
+                font-weight: 500;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                padding: 6px 14px;
+                border-radius: 100px;
+                margin-bottom: 20px;
+            }
+
+            .page-title {
+                font-family: 'Playfair Display', serif;
+                font-size: clamp(28px, 5vw, 42px);
+                font-weight: 700;
+                color: var(--text-primary);
+                line-height: 1.2;
+                margin-bottom: 8px;
+            }
+
+                .page-title span {
+                    color: var(--accent);
+                }
+
+            .page-subtitle {
+                color: var(--text-muted);
+                font-size: 15px;
+                margin-bottom: 36px;
+            }
+
+            .card-form {
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: 20px;
+                padding: 40px;
+                box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+                position: relative;
+                overflow: hidden;
+            }
+
+                .card-form::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 2px;
+                    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+                }
+
+            .form-group {
+                margin-bottom: 24px;
+            }
+
+            .form-label {
+                display: block;
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--text-muted);
+                letter-spacing: 0.5px;
+                margin-bottom: 8px;
+                text-transform: uppercase;
+            }
+
+            .form-control-custom {
+                width: 100%;
+                background: var(--bg-input);
+                border: 1px solid var(--border);
+                color: var(--text-primary);
+                border-radius: 12px;
+                padding: 14px 16px;
+                font-family: 'DM Sans', sans-serif;
+                font-size: 15px;
+                transition: all 0.2s ease;
+                outline: none;
+                resize: vertical;
+            }
+
+                .form-control-custom:focus {
+                    border-color: var(--accent);
+                    background: #222840;
+                    box-shadow: 0 0 0 4px rgba(245, 166, 35, 0.12);
+                }
+
+                .form-control-custom::placeholder {
+                    color: #454b5e;
+                }
+
+                .form-control-custom.is-invalid {
+                    border-color: var(--error);
+                }
+
+            textarea.form-control-custom {
+                min-height: 130px;
+            }
+
+            /* Star Rating */
+            .star-rating-group {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+                .star-rating-group input[type="radio"] {
+                    display: none;
+                }
+
+                .star-rating-group label {
+                    cursor: pointer;
+                    font-size: 32px;
+                    color: #2e3447;
+                    transition: color 0.15s ease, transform 0.15s ease;
+                    line-height: 1;
+                }
+
+                    .star-rating-group label:hover,
+                    .star-rating-group label.active,
+                    .star-rating-group input[type="radio"]:checked ~ label {
+                        color: var(--accent);
+                    }
+
+                    .star-rating-group label:hover {
+                        transform: scale(1.2);
+                    }
+
+            .score-display {
+                margin-left: 12px;
+                font-size: 22px;
+                font-family: 'Playfair Display', serif;
+                font-weight: 700;
+                color: var(--accent);
+                min-width: 40px;
+            }
+
+            /* Date Input Fix */
+            input[type="datetime-local"].form-control-custom::-webkit-calendar-picker-indicator {
+                filter: invert(0.5) sepia(1) hue-rotate(10deg) saturate(3);
+                cursor: pointer;
+            }
+
+            /* Toggle Switch */
+            .toggle-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: var(--bg-input);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 14px 16px;
+            }
+
+            .toggle-info {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .toggle-label {
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--text-primary);
+            }
+
+            .toggle-hint {
+                font-size: 12px;
+                color: var(--text-muted);
+            }
+
+            .form-switch .form-check-input {
+                width: 48px;
+                height: 26px;
+                cursor: pointer;
+                background-color: #2e3447;
+                border-color: #3a4055;
+            }
+
+                .form-switch .form-check-input:checked {
+                    background-color: var(--success);
+                    border-color: var(--success);
+                }
+
+                .form-switch .form-check-input:focus {
+                    box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.2);
+                    border-color: var(--success);
+                }
+
+            /* Divider */
+            .section-divider {
+                border: none;
+                border-top: 1px solid var(--border);
+                margin: 28px 0;
+            }
+
+            /* Submit Button */
+            .btn-submit {
+                width: 100%;
+                padding: 16px;
+                background: linear-gradient(135deg, var(--accent), #e8900a);
+                border: none;
+                border-radius: 12px;
+                color: #0d0f14;
+                font-family: 'DM Sans', sans-serif;
+                font-size: 16px;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                position: relative;
+                overflow: hidden;
+            }
+
+                .btn-submit::after {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+                    opacity: 0;
+                    transition: opacity 0.2s;
+                }
+
+                .btn-submit:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 12px 32px rgba(245, 166, 35, 0.35);
+                }
+
+                    .btn-submit:hover::after {
+                        opacity: 1;
+                    }
+
+                .btn-submit:active {
+                    transform: translateY(0);
+                }
+
+                .btn-submit.loading .spinner {
+                    display: inline-block;
+                }
+
+                .btn-submit .spinner {
+                    display: none;
+                    width: 18px;
+                    height: 18px;
+                    border: 2px solid rgba(0,0,0,0.2);
+                    border-top-color: #0d0f14;
+                    border-radius: 50%;
+                    animation: spin 0.7s linear infinite;
+                }
+
+            @@keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            /* Validation messages */
+            .field-error {
+                font-size: 12px;
+                color: var(--error);
+                margin-top: 5px;
+                display: none;
+            }
+
+                .field-error.visible {
+                    display: block;
+                }
+
+            /* Success Toast */
+            .toast-success {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: var(--success);
+                color: #0d0f14;
+                font-weight: 600;
+                padding: 14px 22px;
+                border-radius: 12px;
+                box-shadow: 0 8px 30px rgba(62,207,142,0.4);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                transform: translateY(80px);
+                opacity: 0;
+                transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                z-index: 9999;
+            }
+
+                .toast-success.show {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+
+            /* Fade-in animation */
+            .fade-in {
+                animation: fadeUp 0.5s ease both;
+            }
+
+            @@keyframes fadeUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .fade-in:nth-child(1) {
+                animation-delay: 0.05s;
+            }
+
+            .fade-in:nth-child(2) {
+                animation-delay: 0.1s;
+            }
+
+            .fade-in:nth-child(3) {
+                animation-delay: 0.15s;
+            }
+
+            @@media (max-width: 576px) {
+                .card-form {
+                    padding: 24px 20px;
+                }
+            }
+    </style>
+</head>
+<body>
+
+    <div class="comment-wrapper">
+        <div class="fade-in">
+            <div class="page-badge">
+                <i class="fas fa-star" style="font-size:10px;"></i> Tur Değerlendirmesi
+            </div>
+            <h1 class="page-title">Deneyimini <span>Paylaş</span></h1>
+            <p class="page-subtitle">Yorumun diğer gezginlere rehberlik edecek.</p>
+        </div>
+
+        <div class="card-form fade-in">
+            <form asp-action="CreateComment" asp-controller="Comment" method="post" id="commentForm">
+                @Html.AntiForgeryToken()
+
+                <input type="text" asp-for="TourId" class="form-control"/>
+
+                <!-- Başlık -->
+                <div class="form-group">
+                    <label class="form-label">Yorum Başlığı</label>
+                    <input asp-for="Headline"
+                           class="form-control-custom"
+                           placeholder="Örn: Harika bir deneyimdi!"
+                           id="headline" />
+                    <span asp-validation-for="Headline" class="field-error visible"></span>
+                </div>
+
+                <!-- Yorum Detayı -->
+                <div class="form-group">
+                    <label class="form-label">Yorumunuz</label>
+                    <textarea asp-for="CommentDetail"
+                              class="form-control-custom"
+                              placeholder="Bu tur hakkında düşüncelerinizi detaylıca yazın..."
+                              id="commentDetail"></textarea>
+                    <span asp-validation-for="CommentDetail" class="field-error visible"></span>
+                </div>
+
+                <!-- Puan / Star Rating -->
+                <div class="form-group">
+                    <label class="form-label">Puanınız</label>
+                    <div class="d-flex align-items-center">
+                        <div class="star-rating-group" id="starGroup">
+                            <input type="radio" name="Score" id="s5" value="5" asp-for="Score">
+                            <input type="radio" name="Score" id="s4" value="4" asp-for="Score">
+                            <input type="radio" name="Score" id="s3" value="3" asp-for="Score">
+                            <input type="radio" name="Score" id="s2" value="2" asp-for="Score">
+                            <input type="radio" name="Score" id="s1" value="1" asp-for="Score">
+                            <label for="s5" title="5 Mükemmel">&#9733;</label>
+                            <label for="s4" title="4 İyi">&#9733;</label>
+                            <label for="s3" title="3 Orta">&#9733;</label>
+                            <label for="s2" title="2 Kötü">&#9733;</label>
+                            <label for="s1" title="1 Berbat">&#9733;</label>
+                        </div>
+                        <div class="score-display" id="scoreDisplay">—</div>
+                    </div>
+                    <span class="field-error" id="scoreError">Lütfen bir puan seçin.</span>
+                </div>
+
+                <hr class="section-divider">
+
+                <!-- Yorum Tarihi -->
+                <div class="form-group">
+                    <label class="form-label">Yorum Tarihi</label>
+                    <input asp-for="CommentDate"
+                           type="datetime-local"
+                           class="form-control-custom"
+                           id="commentDate" />
+                    <span asp-validation-for="CommentDate" class="field-error visible"></span>
+                </div>
+
+                <!-- Durum Toggle -->
+                <div class="form-group">
+                    <label class="form-label">Yayın Durumu</label>
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <span class="toggle-label">Yorumu Yayınla</span>
+                            <span class="toggle-hint">Kapatırsanız yorum taslak olarak kaydedilir</span>
+                        </div>
+                        <div class="form-check form-switch mb-0">
+                            <input asp-for="IsStatus"
+                                   class="form-check-input"
+                                   type="checkbox"
+                                   id="isStatus"
+                                   role="switch">
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="section-divider">
+
+                <!-- Submit -->
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span class="spinner" id="spinner"></span>
+                    <i class="fas fa-paper-plane" id="btnIcon"></i>
+                    <span id="btnText">Yorumu Gönder</span>
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div class="toast-success" id="toastSuccess">
+        <i class="fas fa-check-circle"></i>
+        Yorumunuz başarıyla gönderildi!
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        // --- Set default datetime ---
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        document.getElementById('commentDate').value = now.toISOString().slice(0,16);
+
+        // --- Star Rating (RTL trick with CSS reversed) ---
+        const stars = document.querySelectorAll('#starGroup label');
+        const radios = document.querySelectorAll('#starGroup input[type="radio"]');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const scoreLabels = ['', 'Berbat', 'Kötü', 'Orta', 'İyi', 'Mükemmel'];
+
+        // Re-order labels visually: labels are after inputs, reverse for display
+        // Stars are ordered 5→1 in DOM, we want to display 1→5 left-to-right
+        const starContainer = document.getElementById('starGroup');
+        starContainer.style.flexDirection = 'row-reverse';
+
+        radios.forEach(radio => {
+        radio.addEventListener('change', () => {
+        const val = parseInt(radio.value);
+        scoreDisplay.textContent = val + ' · ' + scoreLabels[val];
+        });
+        });
+
+        // Hover effect
+        stars.forEach(star => {
+        star.addEventListener('mouseover', function() {
+        const forId = this.getAttribute('for');
+        const val = parseInt(document.getElementById(forId).value);
+        stars.forEach(s => {
+        const sVal = parseInt(document.getElementById(s.getAttribute('for')).value);
+        s.style.color = sVal <= val ? 'var(--accent-light)' : '#2e3447';
+        });
+        });
+        });
+
+        starContainer.addEventListener('mouseleave', () => {
+        const checked = document.querySelector('#starGroup input[type="radio"]:checked');
+        stars.forEach(s => {
+        const sVal = parseInt(document.getElementById(s.getAttribute('for')).value);
+        const checkedVal = checked ? parseInt(checked.value) : 0;
+        s.style.color = sVal <= checkedVal ? 'var(--accent)' : '#2e3447';
+        });
+        });
+
+        // --- Form submit with loading state ---
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+        const checked = document.querySelector('#starGroup input[type="radio"]:checked');
+        if (!checked) {
+        e.preventDefault();
+        document.getElementById('scoreError').classList.add('visible');
+        return;
+        } else {
+        document.getElementById('scoreError').classList.remove('visible');
+        }
+
+        const btn = document.getElementById('submitBtn');
+        const spinner = document.getElementById('spinner');
+        const icon = document.getElementById('btnIcon');
+        const text = document.getElementById('btnText');
+
+        btn.classList.add('loading');
+        spinner.style.display = 'inline-block';
+        icon.style.display = 'none';
+        text.textContent = 'Gönderiliyor...';
+        btn.disabled = true;
+        });
+
+        // --- Toast (show if TempData success) ---
+        @if (TempData["CommentSuccess"] != null)
+        {
+            <text>
+                window.addEventListener('load', () => {
+                const toast = document.getElementById('toastSuccess');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3500);
+                });
+            </text>
+        }
+    </script>
+
+</body>
+</html>
+
+

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ProjectTravelin.Dtos.CategoryDtos;
+using ProjectTravelin.Dtos.CommentDtos;
 using ProjectTravelin.Dtos.TourDtos;
 using ProjectTravelin.Entities;
 
@@ -18,6 +19,13 @@ namespace ProjectTravelin.Mapping
             CreateMap<Tour, ResultTourDto>().ReverseMap();
             CreateMap<Tour, UpdateTourDto>().ReverseMap();
             CreateMap<Tour, GetTourByIdDto>().ReverseMap();
+
+            CreateMap<Comment, CreateCommentDto>().ReverseMap();
+            CreateMap<Comment, ResultCommentDto>().ReverseMap();
+            CreateMap<Comment, UpdateCommentDto>().ReverseMap();
+            CreateMap<Comment, GetCommentByIdDto>().ReverseMap();
+
+
         }
     }
 }
