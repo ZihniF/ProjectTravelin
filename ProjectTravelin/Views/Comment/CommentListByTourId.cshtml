@@ -1,0 +1,848 @@
+﻿@model List<ResultCommentListByTourIdDto>
+@{
+    Layout=null;
+}
+@{
+    ViewData["Title"] = "Tur Yorumları";
+    var tourName = ViewBag.TourName ?? "Tur Adı";
+    var tourId = ViewBag.TourId ?? "";
+
+    var approvedComments = Model?.Where(c => c.IsStatus).ToList() ?? new List<ResultCommentListByTourIdDto>();
+    var totalCount = approvedComments.Count;
+    var avgScore = totalCount > 0 ? approvedComments.Average(c => c.Score) : 0;
+
+    int[] distrib = new int[6];
+    foreach (var c in approvedComments) if (c.Score >= 1 && c.Score <= 5) distrib[c.Score]++;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@tourName — Yorumlar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+            :root {
+                --sand: #f5efe6;
+                --sand-2: #ebe0ce;
+                --clay: #c8956c;
+                --terra: #a05c3b;
+                --forest: #2d4a3e;
+                --forest-2: #3a5e50;
+                --ink: #1a1a18;
+                --ink-soft: #3b3b38;
+                --muted: #8a8570;
+                --white: #fdfaf6;
+                --card-bg: #ffffff;
+                --shadow: 0 2px 24px rgba(26,26,24,0.08);
+                --radius: 16px;
+            }
+
+            *, *::before, *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                font-family: 'Outfit', sans-serif;
+                background-color: var(--sand);
+                color: var(--ink);
+                min-height: 100vh;
+            }
+
+            /* ── Hero Banner ── */
+            .hero {
+                background: linear-gradient(160deg, var(--forest) 0%, #1e3329 60%, #162820 100%);
+                padding: 56px 0 80px;
+                position: relative;
+                overflow: hidden;
+            }
+
+                .hero::before {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    background-image: radial-gradient(ellipse at 80% 0%, rgba(200,149,108,0.18) 0%, transparent 55%), radial-gradient(ellipse at 10% 100%, rgba(200,149,108,0.1) 0%, transparent 45%);
+                }
+
+            .hero-pattern {
+                position: absolute;
+                inset: 0;
+                opacity: 0.04;
+                background-image: repeating-linear-gradient( 45deg, var(--sand) 0, var(--sand) 1px, transparent 0, transparent 50% );
+                background-size: 20px 20px;
+            }
+
+            .hero-content {
+                position: relative;
+                z-index: 1;
+            }
+
+            .breadcrumb-nav {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 13px;
+                color: rgba(245,239,230,0.5);
+                margin-bottom: 20px;
+            }
+
+                .breadcrumb-nav a {
+                    color: rgba(245,239,230,0.65);
+                    text-decoration: none;
+                    transition: color .2s;
+                }
+
+                    .breadcrumb-nav a:hover {
+                        color: var(--clay);
+                    }
+
+                .breadcrumb-nav span {
+                    color: var(--clay);
+                }
+
+            .hero-title {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: clamp(32px, 5vw, 54px);
+                font-weight: 600;
+                color: var(--white);
+                line-height: 1.15;
+                margin-bottom: 6px;
+            }
+
+            .hero-subtitle {
+                color: rgba(245,239,230,0.55);
+                font-size: 15px;
+                font-weight: 300;
+                margin-bottom: 36px;
+            }
+
+            /* ── Score Summary Card ── */
+            .score-summary {
+                background: rgba(255,255,255,0.07);
+                backdrop-filter: blur(12px);
+                border: 1px solid rgba(255,255,255,0.1);
+                border-radius: var(--radius);
+                padding: 28px 32px;
+                display: flex;
+                align-items: center;
+                gap: 40px;
+                flex-wrap: wrap;
+            }
+
+            .big-score {
+                text-align: center;
+                flex-shrink: 0;
+            }
+
+            .big-score-num {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 72px;
+                font-weight: 600;
+                color: var(--white);
+                line-height: 1;
+            }
+
+            .big-score-label {
+                font-size: 12px;
+                color: rgba(245,239,230,0.5);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-top: 4px;
+            }
+
+            .score-divider {
+                width: 1px;
+                height: 70px;
+                background: rgba(255,255,255,0.15);
+                flex-shrink: 0;
+            }
+
+            .score-stars-row {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                margin-bottom: 8px;
+            }
+
+                .score-stars-row .star {
+                    color: var(--clay);
+                    font-size: 20px;
+                }
+
+                    .score-stars-row .star.empty {
+                        color: rgba(200,149,108,0.25);
+                    }
+
+            .score-total {
+                font-size: 13px;
+                color: rgba(245,239,230,0.5);
+            }
+
+            /* Distribution bars */
+            .distrib {
+                flex: 1;
+                min-width: 200px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .distrib-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .distrib-label {
+                font-size: 12px;
+                color: rgba(245,239,230,0.55);
+                width: 12px;
+                text-align: right;
+                flex-shrink: 0;
+            }
+
+            .distrib-bar-wrap {
+                flex: 1;
+                height: 6px;
+                background: rgba(255,255,255,0.1);
+                border-radius: 99px;
+                overflow: hidden;
+            }
+
+            .distrib-bar {
+                height: 100%;
+                background: linear-gradient(90deg, var(--clay), #e8a87a);
+                border-radius: 99px;
+                transition: width 1s cubic-bezier(.4,0,.2,1);
+            }
+
+            .distrib-count {
+                font-size: 11px;
+                color: rgba(245,239,230,0.4);
+                width: 18px;
+                flex-shrink: 0;
+            }
+
+            /* ── Main Layout ── */
+            .main-wrap {
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 0 16px 80px;
+                transform: translateY(-32px);
+            }
+
+            /* ── Filter / Sort Bar ── */
+            .filter-bar {
+                background: var(--card-bg);
+                border-radius: var(--radius);
+                box-shadow: var(--shadow);
+                padding: 14px 20px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                flex-wrap: wrap;
+                margin-bottom: 24px;
+            }
+
+                .filter-bar .count-label {
+                    font-size: 14px;
+                    color: var(--muted);
+                }
+
+                    .filter-bar .count-label strong {
+                        color: var(--ink);
+                    }
+
+            .filter-chips {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .chip {
+                padding: 6px 14px;
+                border-radius: 100px;
+                font-size: 13px;
+                font-weight: 500;
+                cursor: pointer;
+                border: 1.5px solid var(--sand-2);
+                background: transparent;
+                color: var(--muted);
+                transition: all .2s;
+            }
+
+                .chip.active, .chip:hover {
+                    background: var(--forest);
+                    border-color: var(--forest);
+                    color: var(--white);
+                }
+
+            .sort-select {
+                padding: 7px 32px 7px 12px;
+                font-family: 'Outfit', sans-serif;
+                font-size: 13px;
+                border: 1.5px solid var(--sand-2);
+                border-radius: 8px;
+                background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%238a8570' d='M0 0l6 8 6-8z'/%3E%3C/svg%3E") no-repeat right 10px center;
+                appearance: none;
+                color: var(--ink-soft);
+                cursor: pointer;
+            }
+
+            /* ── Comment Card ── */
+            .comment-list {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .comment-card {
+                background: var(--card-bg);
+                border-radius: var(--radius);
+                box-shadow: var(--shadow);
+                padding: 28px;
+                border-left: 3px solid transparent;
+                transition: border-color .25s, transform .25s, box-shadow .25s;
+                animation: slideUp .45s ease both;
+            }
+
+                .comment-card:hover {
+                    border-left-color: var(--clay);
+                    transform: translateX(4px);
+                    box-shadow: 0 6px 32px rgba(26,26,24,0.12);
+                }
+
+            @@keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(16px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .comment-card:nth-child(1) {
+                animation-delay: .05s;
+            }
+
+            .comment-card:nth-child(2) {
+                animation-delay: .10s;
+            }
+
+            .comment-card:nth-child(3) {
+                animation-delay: .15s;
+            }
+
+            .comment-card:nth-child(4) {
+                animation-delay: .20s;
+            }
+
+            .comment-card:nth-child(5) {
+                animation-delay: .25s;
+            }
+
+            .comment-card:nth-child(6) {
+                animation-delay: .30s;
+            }
+
+            .card-top {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 16px;
+                margin-bottom: 14px;
+                flex-wrap: wrap;
+            }
+
+            .avatar-group {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+            }
+
+            .avatar {
+                width: 46px;
+                height: 46px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--white);
+                flex-shrink: 0;
+            }
+
+            .avatar-meta {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .commenter-name {
+                font-size: 15px;
+                font-weight: 600;
+                color: var(--ink);
+            }
+
+            .comment-date {
+                font-size: 12px;
+                color: var(--muted);
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+            .score-badge {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                background: linear-gradient(135deg, var(--forest), var(--forest-2));
+                color: var(--white);
+                padding: 6px 14px;
+                border-radius: 100px;
+                font-size: 13px;
+                font-weight: 600;
+                flex-shrink: 0;
+            }
+
+                .score-badge i {
+                    font-size: 10px;
+                    color: var(--clay);
+                }
+
+            .mini-stars {
+                display: flex;
+                gap: 2px;
+            }
+
+                .mini-stars .s {
+                    font-size: 13px;
+                    color: var(--clay);
+                }
+
+                    .mini-stars .s.e {
+                        color: #ddd5c5;
+                    }
+
+            .comment-headline {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 20px;
+                font-weight: 600;
+                color: var(--ink);
+                margin-bottom: 8px;
+                line-height: 1.3;
+            }
+
+            .comment-body {
+                font-size: 14.5px;
+                line-height: 1.7;
+                color: var(--ink-soft);
+            }
+
+                .comment-body.collapsed {
+                    display: -webkit-box;
+                    -webkit-line-clamp: 3;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+
+            .read-more {
+                display: inline-block;
+                margin-top: 8px;
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--terra);
+                cursor: pointer;
+                background: none;
+                border: none;
+                padding: 0;
+            }
+
+                .read-more:hover {
+                    text-decoration: underline;
+                }
+
+            /* Status pill (hidden/draft) */
+            .draft-pill {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                background: #fff3e0;
+                color: #b36a00;
+                border: 1px solid #f9c470;
+                border-radius: 6px;
+                font-size: 11px;
+                font-weight: 500;
+                padding: 3px 8px;
+                margin-top: 10px;
+            }
+
+            /* ── Empty State ── */
+            .empty-state {
+                background: var(--card-bg);
+                border-radius: var(--radius);
+                box-shadow: var(--shadow);
+                padding: 64px 32px;
+                text-align: center;
+            }
+
+            .empty-icon {
+                width: 72px;
+                height: 72px;
+                background: var(--sand);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 20px;
+                font-size: 28px;
+                color: var(--clay);
+            }
+
+            .empty-state h3 {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 24px;
+                font-weight: 600;
+                margin-bottom: 8px;
+            }
+
+            .empty-state p {
+                font-size: 14px;
+                color: var(--muted);
+            }
+
+            /* ── CTA Button ── */
+            .btn-add-comment {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: var(--clay);
+                color: var(--white);
+                border: none;
+                border-radius: 10px;
+                padding: 12px 24px;
+                font-family: 'Outfit', sans-serif;
+                font-size: 14px;
+                font-weight: 600;
+                text-decoration: none;
+                cursor: pointer;
+                transition: background .2s, transform .2s, box-shadow .2s;
+            }
+
+                .btn-add-comment:hover {
+                    background: var(--terra);
+                    color: var(--white);
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 24px rgba(160,92,59,0.3);
+                }
+
+            /* ── Pagination ── */
+            .pagination-wrap {
+                display: flex;
+                justify-content: center;
+                margin-top: 32px;
+                gap: 6px;
+            }
+
+            .page-btn {
+                width: 38px;
+                height: 38px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 8px;
+                border: 1.5px solid var(--sand-2);
+                background: var(--card-bg);
+                color: var(--ink-soft);
+                font-size: 13px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all .2s;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            }
+
+                .page-btn.active, .page-btn:hover {
+                    background: var(--forest);
+                    border-color: var(--forest);
+                    color: var(--white);
+                }
+
+            @@media (max-width: 600px) {
+                .score-summary {
+                    gap: 20px;
+                }
+
+                .score-divider {
+                    display: none;
+                }
+
+                .comment-card {
+                    padding: 20px;
+                }
+
+                .filter-bar {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+            }
+    </style>
+</head>
+<body>
+
+    <!-- ── Hero ── -->
+    <section class="hero">
+        <div class="hero-pattern"></div>
+        <div class="container hero-content">
+            <nav class="breadcrumb-nav">
+                <a href="/"><i class="fas fa-home"></i></a>
+                <i class="fas fa-chevron-right" style="font-size:10px;"></i>
+                <a href="/Tour">Turlar</a>
+                <i class="fas fa-chevron-right" style="font-size:10px;"></i>
+                <span>@tourName</span>
+            </nav>
+
+            <h1 class="hero-title">@tourName</h1>
+            <p class="hero-subtitle">Gezginlerin gerçek deneyimleri</p>
+
+            <div class="score-summary">
+                <!-- Big Score -->
+                <div class="big-score">
+                    <div class="big-score-num">@avgScore.ToString("F1")</div>
+                    <div class="big-score-label">/ 5.0 puan</div>
+                </div>
+
+                <div class="score-divider"></div>
+
+                <!-- Stars + count -->
+                <div>
+                    <div class="score-stars-row">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <span class="star @(i <= Math.Round(avgScore) ? "" : "empty")">★</span>
+                        }
+                    </div>
+                    <div class="score-total">@totalCount yorum</div>
+                </div>
+
+                <div class="score-divider"></div>
+
+                <!-- Distribution bars -->
+                <div class="distrib">
+                    @for (int star = 5; star >= 1; star--)
+                    {
+                        var pct = totalCount > 0 ? (distrib[star] * 100.0 / totalCount) : 0;
+                        <div class="distrib-row">
+                            <span class="distrib-label">@star</span>
+                            <div class="distrib-bar-wrap">
+                                <div class="distrib-bar" style="width:@pct.ToString("F0")%"></div>
+                            </div>
+                            <span class="distrib-count">@distrib[star]</span>
+                        </div>
+                    }
+                </div>
+
+                <!-- CTA -->
+                <a href="/Comment/CreateComment?tourId=@tourId" class="btn-add-comment ms-auto">
+                    <i class="fas fa-pen"></i> Yorum Yaz
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Main Content ── -->
+    <div class="main-wrap">
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <span class="count-label"><strong>@totalCount</strong> yorum gösteriliyor</span>
+
+            <div class="filter-chips">
+                <button class="chip active" data-filter="all">Tümü</button>
+                <button class="chip" data-filter="5">5 ★</button>
+                <button class="chip" data-filter="4">4 ★</button>
+                <button class="chip" data-filter="3">3 ★</button>
+                <button class="chip" data-filter="1-2">1-2 ★</button>
+            </div>
+
+            <select class="sort-select" id="sortSelect">
+                <option value="newest">En Yeni</option>
+                <option value="oldest">En Eski</option>
+                <option value="highest">En Yüksek Puan</option>
+                <option value="lowest">En Düşük Puan</option>
+            </select>
+        </div>
+
+        <!-- Comment List -->
+        @if (!approvedComments.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fas fa-comment-dots"></i></div>
+                <h3>Henüz yorum yok</h3>
+                <p>Bu tura ait ilk yorumu sen bırakabilirsin!</p>
+                <a href="/Comment/CreateComment?tourId=@tourId" class="btn-add-comment mt-4">
+                    <i class="fas fa-pen"></i> İlk Yorumu Yaz
+                </a>
+            </div>
+        }
+        else
+        {
+            <!-- Avatar renk paleti -->
+            string[] avatarColors = { "#2d4a3e", "#a05c3b", "#4a6741", "#7a5230", "#3d5a6e", "#6b4c7a" };
+
+            <div class="comment-list" id="commentList">
+                @{
+                    int idx = 0;
+                }
+                @foreach (var comment in approvedComments.OrderByDescending(c => c.CommentDate))
+                {
+                    var initial = comment.Headline?.Length > 0 ? comment.Headline[0].ToString().ToUpper() : "Y";
+                    var color = avatarColors[idx % avatarColors.Length];
+                    var dateStr = comment.CommentDate.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("tr-TR"));
+                    var cardId = $"card-{idx}";
+                    idx++;
+
+                    <div class="comment-card"
+                         data-score="@comment.Score"
+                         data-date="@comment.CommentDate.ToString("yyyyMMddHHmmss")"
+                         id="@cardId">
+
+                        <div class="card-top">
+                            <div class="avatar-group">
+                                <div class="avatar" style="background:@color;">@initial</div>
+                                <div class="avatar-meta">
+                                    <span class="commenter-name">Gezgin #@(idx)</span>
+                                    <span class="comment-date">
+                                        <i class="far fa-calendar-alt"></i> @dateStr
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="mini-stars">
+                                    @for (int s = 1; s <= 5; s++)
+                                    {
+                                        <span class="s @(s <= comment.Score ? "" : "e")">★</span>
+                                    }
+                                </div>
+                                <div class="score-badge">
+                                    <i class="fas fa-star"></i> @comment.Score.ToString("F1")
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="comment-headline">@comment.Headline</h3>
+
+                        @if (!string.IsNullOrWhiteSpace(comment.CommentDetail))
+                        {
+                            var bodyId = $"body-{cardId}";
+                            var isLong = comment.CommentDetail.Length > 220;
+                            <p class="comment-body @(isLong ? "collapsed" : "")" id="@bodyId">
+                                @comment.CommentDetail
+                            </p>
+                            if (isLong)
+                            {
+                                <button class="read-more" onclick="toggleBody('@bodyId', this)">Devamını oku →</button>
+                            }
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Pagination placeholder -->
+            @if (approvedComments.Count > 8)
+            {
+                <div class="pagination-wrap" id="pagination"></div>
+            }
+        }
+       
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ── Read More Toggle ──
+        function toggleBody(id, btn) {
+        const el = document.getElementById(id);
+        if (el.classList.contains('collapsed')) {
+        el.classList.remove('collapsed');
+        btn.textContent = '← Kısalt';
+        } else {
+        el.classList.add('collapsed');
+        btn.textContent = 'Devamını oku →';
+        }
+        }
+
+        // ── Filter Chips ──
+        const chips = document.querySelectorAll('.chip');
+        chips.forEach(chip => {
+        chip.addEventListener('click', () => {
+        chips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        filterAndSort();
+        });
+        });
+
+        document.getElementById('sortSelect')?.addEventListener('change', filterAndSort);
+
+        function filterAndSort() {
+        const cards = Array.from(document.querySelectorAll('.comment-card'));
+        if (!cards.length) return;
+
+        const filterVal = document.querySelector('.chip.active')?.dataset.filter || 'all';
+        const sortVal   = document.getElementById('sortSelect')?.value || 'newest';
+
+        // Filter
+        cards.forEach(card => {
+        const score = parseInt(card.dataset.score);
+        let show = true;
+        if (filterVal === '5')   show = score === 5;
+        else if (filterVal === '4') show = score === 4;
+        else if (filterVal === '3') show = score === 3;
+        else if (filterVal === '1-2') show = score <= 2;
+        card.style.display = show ? '' : 'none';
+        });
+
+        // Sort
+        const list = document.getElementById('commentList');
+        if (!list) return;
+        const visible = cards.filter(c => c.style.display !== 'none');
+
+        visible.sort((a, b) => {
+        const da = parseInt(a.dataset.date), db = parseInt(b.dataset.date);
+        const sa = parseInt(a.dataset.score), sb = parseInt(b.dataset.score);
+        if (sortVal === 'newest')  return db - da;
+        if (sortVal === 'oldest')  return da - db;
+        if (sortVal === 'highest') return sb - sa;
+        if (sortVal === 'lowest')  return sa - sb;
+        return 0;
+        });
+
+        visible.forEach(card => list.appendChild(card));
+        }
+
+        // ── Animate distrib bars on load ──
+        window.addEventListener('load', () => {
+        document.querySelectorAll('.distrib-bar').forEach(bar => {
+        const target = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => { bar.style.width = target; }, 300);
+        });
+        });
+    </script>
+</body>
+</html>

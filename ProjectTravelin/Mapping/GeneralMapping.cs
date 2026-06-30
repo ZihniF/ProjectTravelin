@@ -24,6 +24,7 @@ namespace ProjectTravelin.Mapping
             CreateMap<Comment, ResultCommentDto>().ReverseMap();
             CreateMap<Comment, UpdateCommentDto>().ReverseMap();
             CreateMap<Comment, GetCommentByIdDto>().ReverseMap();
+            CreateMap<Comment, ResultCommentListByTourIdDto>().ReverseMap();
 
 
         }

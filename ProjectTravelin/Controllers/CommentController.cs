@@ -27,5 +27,11 @@ namespace ProjectTravelin.Controllers
             await _commentService.CreateCommentAsync(createCommentDto);
             return RedirectToAction("CommentList");
         }
+
+        public async Task<IActionResult> CommentListByTourId( string id)
+        {
+            var values = await _commentService.GetCommentsByTourId(id);
+            return View(values);
+        }
     }
 }

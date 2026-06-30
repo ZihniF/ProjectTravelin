@@ -572,7 +572,7 @@
                                             onclick="confirmDelete('@item.TourId', '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(item.Title))')">
                                         <i class="bi bi-trash3"></i>
                                     </button>
-                                    <a asp-action="Detail" asp-route-id="@item.TourId"
+                                    <a asp-action="CommentListByTourId" asp-route-id="@item.TourId" asp-controller="Comment"
                                        class="btn-action btn-detail"
                                        aria-label="@item.Title tur detayı"
                                        title="Detay">

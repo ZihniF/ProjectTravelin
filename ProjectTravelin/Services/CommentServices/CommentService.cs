@@ -42,6 +42,12 @@ namespace ProjectTravelin.Services.CommentServices
             return _mapper.Map<GetCommentByIdDto>(value);
         }
 
+        public async Task<List<ResultCommentListByTourIdDto>> GetCommentsByTourId(string id)
+        {
+            var values = await _commentCollection.Find(x => x.TourId == id).ToListAsync();
+            return _mapper.Map<List<ResultCommentListByTourIdDto>>(values);
+        }
+
         public async Task UpdateCommentAsync(UpdateCommentDto updateCommentDto)
         {
             var values = _mapper.Map<Comment>(updateCommentDto);
