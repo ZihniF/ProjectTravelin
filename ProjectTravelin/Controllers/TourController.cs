@@ -29,5 +29,17 @@ namespace ProjectTravelin.Controllers
             var values = await _tourService.GetAllTourAsync();
             return View(values);
         }
+
+        public async Task<IActionResult> TourDetail(string id)
+        {
+            var value = await _tourService.GetTourByIdAsync(id);
+
+            if (value == null)
+            {
+                return NotFound();
+            }
+
+            return View(value);
+        }
     }
 }

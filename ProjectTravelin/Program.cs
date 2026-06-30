@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using ProjectTravelin.Services.CategoryServices;
 using ProjectTravelin.Services.CommentServices;
+using ProjectTravelin.Services.TourProgramServices;
 using ProjectTravelin.Services.TourServices;
 using ProjectTravelin.Settings;
 using System.Reflection;
@@ -10,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<ITourService, TourService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<ITourProgramService, TourProgramService>();
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

@@ -15,7 +15,7 @@ namespace ProjectTravelin.ViewComponents.TourViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(int page =1)
         {
-            int pageSize = 3;
+            int pageSize = 4;
             var values = await _tourService.GetAllTourAsync();
             var totalCount = values.Count();
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);

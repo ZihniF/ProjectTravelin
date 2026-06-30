@@ -2,6 +2,7 @@
 using ProjectTravelin.Dtos.CategoryDtos;
 using ProjectTravelin.Dtos.CommentDtos;
 using ProjectTravelin.Dtos.TourDtos;
+using ProjectTravelin.Dtos.TourProgramDtos;
 using ProjectTravelin.Entities;
 
 namespace ProjectTravelin.Mapping
@@ -25,6 +26,11 @@ namespace ProjectTravelin.Mapping
             CreateMap<Comment, UpdateCommentDto>().ReverseMap();
             CreateMap<Comment, GetCommentByIdDto>().ReverseMap();
             CreateMap<Comment, ResultCommentListByTourIdDto>().ReverseMap();
+
+            CreateMap<TourProgram, CreateTourProgramDto>().ReverseMap();
+            CreateMap<TourProgram, ResultTourProgramDto>().ReverseMap();
+            CreateMap<TourProgram, UpdateTourProgramDto>().ReverseMap();
+            CreateMap<TourProgram, GetTourProgramByIdDto>().ReverseMap();
 
 
         }

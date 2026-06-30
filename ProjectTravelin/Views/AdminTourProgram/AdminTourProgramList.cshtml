@@ -1,0 +1,52 @@
+﻿@model List<ProjectTravelin.Dtos.TourProgramDtos.ResultTourProgramDto>
+
+@{
+    Layout = null;
+}
+
+<h2>Tur Programları</h2>
+
+<a href="/TourProgram/CreateTourProgram" class="btn btn-primary mb-3">
+    Yeni Program Ekle
+</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tur Id</th>
+            <th>Gün</th>
+            <th>Başlık</th>
+            <th>Açıklama</th>
+            <th>Görsel</th>
+            <th>Sil</th>
+            <th>Güncelle</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.TourId</td>
+                <td>@item.DayNumber. Gün</td>
+                <td>@item.Title</td>
+                <td>@item.Description</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img src="@item.ImageUrl" style="width:100px;height:70px;object-fit:cover;" />
+                    }
+                </td>
+                <td>
+                    <a href="/TourProgram/DeleteTourProgram/@item.TourProgramId" class="btn btn-danger">
+                        Sil
+                    </a>
+                </td>
+                <td>
+                    <a href="/TourProgram/UpdateTourProgram/@item.TourProgramId" class="btn btn-warning">
+                        Güncelle
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

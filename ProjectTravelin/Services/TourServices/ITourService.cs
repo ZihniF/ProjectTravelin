@@ -9,6 +9,8 @@ namespace ProjectTravelin.Services.TourServices
         Task UpdateTourAsync(UpdateTourDto updateTourDto);
         Task DeleteTourAsync(string id);
         Task<GetTourByIdDto> GetTourByIdAsync(string id);
-       
+        Task<List<ResultTourDto>> GetToursByPageAsync(int page, int pageSize);
+        Task<long> GetTourCountAsync();
+
     }
 }

@@ -1,0 +1,42 @@
+﻿@model List<ProjectTravelin.Dtos.TourProgramDtos.ResultTourProgramDto>
+
+<div class="bg-white rounded box-shadow p-4 mb-4">
+    <h3 class="mb-4">Tur Programı</h3>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="tour-program-list">
+            @foreach (var item in Model)
+            {
+                <div class="border rounded p-3 mb-3">
+                    <div class="row align-items-center">
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <div class="col-md-3 mb-3 mb-md-0">
+                                <img src="@item.ImageUrl" alt="@item.Title" class="w-100 rounded" />
+                            </div>
+
+                            <div class="col-md-9">
+                                <h5 class="theme mb-1">@item.DayNumber. Gün</h5>
+                                <h4 class="mb-2">@item.Title</h4>
+                                <p class="mb-0">@item.Description</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-12">
+                                <h5 class="theme mb-1">@item.DayNumber. Gün</h5>
+                                <h4 class="mb-2">@item.Title</h4>
+                                <p class="mb-0">@item.Description</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="mb-0">Bu tur için henüz program bilgisi eklenmemiş.</p>
+    }
+</div>
