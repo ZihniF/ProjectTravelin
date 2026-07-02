@@ -16,5 +16,8 @@ namespace ProjectTravelin.Entities
         public DateTime TourDate { get; set; }
         public string DayNight { get; set; }
         public string ImageUrl { get; set; }
+
+        public string GeminiImageUrl { get; set; }
+        public string YoutubeVideoUrl { get; set; }
     }
 }

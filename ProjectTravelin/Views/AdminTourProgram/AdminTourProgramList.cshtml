@@ -1,4 +1,4 @@
-﻿@model List<ProjectTravelin.Models.AdminTourProgramListViewModel>
+﻿@model List<ResultTourProgramDto>
 
 @{
     ViewData["Title"] = "Tur Programları";
@@ -6,6 +6,8 @@
 
     var totalProgramCount = Model?.Count ?? 0;
     var totalTourCount = Model?.Select(x => x.TourId).Distinct().Count() ?? 0;
+
+    var tourLookup = ViewBag.Tours as Dictionary<string, string> ?? new Dictionary<string, string>();
 }
 
 @section Styles {
@@ -487,10 +489,16 @@
                                 </td>
 
                                 <td>
-                                    <div class="tour-title">@item.TourTitle</div>
+                                    @{
+                                        var tourText = tourLookup.ContainsKey(item.TourId)
+                                            ? tourLookup[item.TourId]
+                                            : item.TourId;
+                                    }
+
+                                    <div class="tour-title">@tourText</div>
                                     <div class="tour-location">
-                                        <i class="bi bi-geo-alt"></i>
-                                        @item.TourLocation
+                                        <i class="bi bi-link-45deg"></i>
+                                        Tur ID: @item.TourId
                                     </div>
                                 </td>
 
@@ -555,6 +563,7 @@
         document.querySelectorAll('.js-delete-program').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 const confirmed = confirm('Bu tur programını silmek istediğinize emin misiniz?');
+
                 if (!confirmed) {
                     e.preventDefault();
                 }

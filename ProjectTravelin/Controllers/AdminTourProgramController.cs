@@ -21,6 +21,13 @@ namespace ProjectTravelin.Controllers
         public async Task<IActionResult> TourProgramList()
         {
             var values = await _tourProgramService.GetAllTourProgramAsync();
+            var tours = await _tourService.GetAllTourAsync();
+
+            ViewBag.Tours = tours.ToDictionary(
+                x => x.TourId,
+                x => $"{x.Title} - {x.City} / {x.Country}"
+            );
+
             return View(values);
         }
 

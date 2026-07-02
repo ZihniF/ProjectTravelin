@@ -2,11 +2,170 @@
 
 @{
     Layout = null;
+    var youtubeEmbedUrl = GetYoutubeEmbedUrl(Model.YoutubeVideoUrl);
+}
+
+@functions {
+    public string GetYoutubeEmbedUrl(string url)
+    {
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            return "";
+        }
+
+        if (url.Contains("youtube.com/embed/"))
+        {
+            return url;
+        }
+
+        if (System.Uri.TryCreate(url, UriKind.Absolute, out var uri))
+        {
+            var host = uri.Host.ToLower();
+
+            if (host.Contains("youtu.be"))
+            {
+                var videoId = uri.AbsolutePath.Trim('/');
+                return $"https://www.youtube.com/embed/{videoId}";
+            }
+
+            if (host.Contains("youtube.com"))
+            {
+                var query = uri.Query.TrimStart('?');
+                var parameters = query.Split('&', StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var parameter in parameters)
+                {
+                    var parts = parameter.Split('=');
+
+                    if (parts.Length == 2 && parts[0] == "v")
+                    {
+                        return $"https://www.youtube.com/embed/{parts[1]}";
+                    }
+                }
+
+                if (uri.AbsolutePath.Contains("/shorts/"))
+                {
+                    var videoId = uri.AbsolutePath.Replace("/shorts/", "").Trim('/');
+                    return $"https://www.youtube.com/embed/{videoId}";
+                }
+            }
+        }
+
+        return url;
+    }
 }
 
 <!DOCTYPE html>
 
 @await Component.InvokeAsync("_TourHeadComponentPartial")
+
+<style>
+    .gemini-image-box {
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #f8f9fa;
+    }
+
+        .gemini-image-box img {
+            width: 100%;
+            height: 360px;
+            object-fit: cover;
+            display: block;
+        }
+
+    .gemini-badge {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        background: rgba(0, 0, 0, .65);
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .video-popup-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.75);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+        .video-popup-overlay.active {
+            display: flex;
+        }
+
+    .video-popup-content {
+        width: 100%;
+        max-width: 900px;
+        background: #111;
+        border-radius: 14px;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    }
+
+    .video-popup-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 18px;
+        background: #fff;
+    }
+
+    .video-popup-title {
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .video-popup-close {
+        border: none;
+        background: #f3f4f6;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        font-size: 22px;
+        line-height: 1;
+        cursor: pointer;
+        color: #374151;
+    }
+
+    .video-frame-wrapper {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+    }
+
+        .video-frame-wrapper iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+    .video-btn {
+        width: 100%;
+        text-align: center;
+        margin-top: 12px;
+        background: #dc2626;
+        color: #fff;
+        border: none;
+    }
+
+        .video-btn:hover {
+            background: #b91c1c;
+            color: #fff;
+        }
+</style>
 
 @await Component.InvokeAsync("_TourHeaderComponentPartial")
 
@@ -70,7 +229,30 @@
                     <h3>Tur Hakkında</h3>
                     <p>@Model.Description</p>
                 </div>
-                @await Component.InvokeAsync("_TourProgramComponentPartial", new { tourId = @Model.TourId })
+
+                <div class="bg-white rounded box-shadow p-4 mb-4">
+                    <h3 class="mb-3">Lokasyona Özel Gemini Görseli</h3>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.GeminiImageUrl))
+                    {
+                        <div class="gemini-image-box">
+                            <img src="@Model.GeminiImageUrl" alt="@Model.City Gemini Görseli" />
+                            <div class="gemini-badge">
+                                Gemini ile oluşturulmuş lokasyon görseli
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="border rounded p-4 bg-light">
+                            <p class="mb-0">
+                                Bu tur için henüz Gemini lokasyon görseli eklenmemiş.
+                            </p>
+                        </div>
+                    }
+                </div>
+
+                @await Component.InvokeAsync("_TourProgramComponentPartial", new { tourId = Model.TourId })
             </div>
 
             <div class="col-lg-4">
@@ -96,6 +278,15 @@
                             </li>
                         </ul>
 
+                        @if (!string.IsNullOrWhiteSpace(youtubeEmbedUrl))
+                        {
+                            <button type="button"
+                                    class="nir-btn video-btn"
+                                    onclick="openTourVideo('@youtubeEmbedUrl')">
+                                <i class="fa fa-play"></i> Tur Videosunu İzle
+                            </button>
+                        }
+
                         <a href="/Booking/Index/@Model.TourId" class="nir-btn w-100 text-center mt-3">
                             Rezervasyon Yap
                         </a>
@@ -114,6 +305,23 @@
     </div>
 </section>
 
+<div class="video-popup-overlay" id="tourVideoPopup">
+    <div class="video-popup-content">
+        <div class="video-popup-header">
+            <h5 class="video-popup-title">@Model.Title - Tur Videosu</h5>
+            <button type="button" class="video-popup-close" onclick="closeTourVideo()">×</button>
+        </div>
+
+        <div class="video-frame-wrapper">
+            <iframe id="tourVideoFrame"
+                    src=""
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+</div>
+
 @await Component.InvokeAsync("_TourFooterComponentPartial")
 
 <div id="back-to-top">
@@ -129,3 +337,27 @@
 <script src="/travelin/js/main.js"></script>
 <script src="/travelin/js/custom-swiper.js"></script>
 <script src="/travelin/js/custom-nav.js"></script>
+
+<script>
+    function openTourVideo(videoUrl) {
+    const popup = document.getElementById('tourVideoPopup');
+    const frame = document.getElementById('tourVideoFrame');
+
+    frame.src = videoUrl + '?autoplay=1';
+    popup.classList.add('active');
+    }
+
+    function closeTourVideo() {
+    const popup = document.getElementById('tourVideoPopup');
+    const frame = document.getElementById('tourVideoFrame');
+
+    frame.src = '';
+    popup.classList.remove('active');
+    }
+
+    document.getElementById('tourVideoPopup').addEventListener('click', function (e) {
+    if (e.target === this) {
+    closeTourVideo();
+    }
+    });
+</script>

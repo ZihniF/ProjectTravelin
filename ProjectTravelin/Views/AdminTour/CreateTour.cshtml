@@ -808,29 +808,71 @@
                 </div>
             </div>
 
-            <!-- GÖRSEL -->
+            <!-- GÖRSEL VE MEDYA -->
             <div class="form-section">
                 <div class="section-header">
                     <div class="section-icon purple"><i class="bi bi-image"></i></div>
                     <div>
-                        <div class="section-title">Tur Görseli</div>
-                        <div class="section-subtitle">URL girin veya dosya yükleyin</div>
+                        <div class="section-title">Tur Görseli ve Medya</div>
+                        <div class="section-subtitle">Kapak görseli, Gemini lokasyon görseli ve YouTube videosu</div>
                     </div>
                 </div>
+
                 <div class="section-body">
-                    <!-- URL ile -->
+                    <!-- Kapak Görsel URL -->
                     <div class="field-group">
                         <label asp-for="ImageUrl" class="field-label">
                             <i class="bi bi-link-45deg" style="color:#a0aec0;font-size:.85rem;"></i>
-                            Görsel URL
+                            Kapak Görsel URL
                         </label>
                         <div class="input-with-icon">
                             <i class="bi bi-link-45deg input-icon"></i>
-                            <input asp-for="ImageUrl" type="url" class="form-control" placeholder="https://ornek.com/gorsel.jpg" id="imageUrlInput" />
+                            <input asp-for="ImageUrl" type="url" class="form-control" placeholder="https://ornek.com/kapak-gorseli.jpg" id="imageUrlInput" />
                         </div>
-                        <div class="field-hint"><i class="bi bi-info-circle me-1"></i>JPEG, PNG, WebP desteklenir.</div>
+                        <div class="field-hint">
+                            <i class="bi bi-info-circle me-1"></i>Tur listesi ve detay sayfasında kullanılacak ana kapak görselidir.
+                        </div>
                         <img src="" alt="Görsel önizleme" class="url-preview-thumb" id="urlPreviewImg" />
-                        <span asp-validation-for="ImageUrl" class="text-danger-field"><i class="bi bi-exclamation-circle"></i><span></span></span>
+                        <span asp-validation-for="ImageUrl" class="text-danger-field">
+                            <i class="bi bi-exclamation-circle"></i><span></span>
+                        </span>
+                    </div>
+
+                    <!-- Gemini Görsel URL -->
+                    <div class="field-group">
+                        <label asp-for="GeminiImageUrl" class="field-label">
+                            <i class="bi bi-stars" style="color:#a0aec0;font-size:.85rem;"></i>
+                            Gemini Lokasyon Görsel URL
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="bi bi-stars input-icon"></i>
+                            <input asp-for="GeminiImageUrl" type="url" class="form-control" placeholder="https://ornek.com/gemini-lokasyon-gorseli.jpg" id="geminiImageUrlInput" />
+                        </div>
+                        <div class="field-hint">
+                            <i class="bi bi-info-circle me-1"></i>Harita yerine detay sayfasında gösterilecek, Gemini/Banana ile oluşturulmuş lokasyon görselidir.
+                        </div>
+                        <img src="" alt="Gemini görsel önizleme" class="url-preview-thumb" id="geminiPreviewImg" />
+                        <span asp-validation-for="GeminiImageUrl" class="text-danger-field">
+                            <i class="bi bi-exclamation-circle"></i><span></span>
+                        </span>
+                    </div>
+
+                    <!-- YouTube Video URL -->
+                    <div class="field-group">
+                        <label asp-for="YoutubeVideoUrl" class="field-label">
+                            <i class="bi bi-youtube" style="color:#a0aec0;font-size:.85rem;"></i>
+                            YouTube Video URL
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="bi bi-youtube input-icon"></i>
+                            <input asp-for="YoutubeVideoUrl" type="url" class="form-control" placeholder="https://www.youtube.com/watch?v=VIDEO_ID" id="youtubeVideoUrlInput" />
+                        </div>
+                        <div class="field-hint">
+                            <i class="bi bi-info-circle me-1"></i>Normal YouTube linki veya embed linki girilebilir. Detay sayfasında pop-up olarak açılır.
+                        </div>
+                        <span asp-validation-for="YoutubeVideoUrl" class="text-danger-field">
+                            <i class="bi bi-exclamation-circle"></i><span></span>
+                        </span>
                     </div>
 
                     <!-- Ayırıcı -->
@@ -936,6 +978,15 @@
                         <div class="summary-row">
                             <span class="label">Kapasite</span>
                             <span class="value" id="sumCapacity">—</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Gemini Görseli</span>
+                            <span class="value" id="sumGemini">—</span>
+                        </div>
+
+                        <div class="summary-row">
+                            <span class="label">Video</span>
+                            <span class="value" id="sumVideo">—</span>
                         </div>
                     </div>
                 </div>
@@ -1044,24 +1095,38 @@
         document.getElementById('nightCount').addEventListener('input', updateDuration);
         updateDuration();
 
-        // ── IMAGE URL PREVIEW ─────────────────────────
-        const imageUrlInput = document.getElementById('imageUrlInput');
-        const urlPreviewImg = document.getElementById('urlPreviewImg');
-        let urlDebounce;
+             // ── IMAGE URL PREVIEW ─────────────────────────
+        function initImagePreview(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
 
-        imageUrlInput.addEventListener('input', function () {
-            clearTimeout(urlDebounce);
-            urlDebounce = setTimeout(function () {
-                const url = imageUrlInput.value.trim();
-                if (url) {
-                    urlPreviewImg.src = url;
-                    urlPreviewImg.style.display = 'block';
-                    urlPreviewImg.onerror = function () { urlPreviewImg.style.display = 'none'; };
-                } else {
-                    urlPreviewImg.style.display = 'none';
-                }
-            }, 600);
-        });
+            if (!input || !preview) return;
+
+            let debounce;
+
+            input.addEventListener('input', function () {
+                clearTimeout(debounce);
+
+                debounce = setTimeout(function () {
+                    const url = input.value.trim();
+
+                    if (url) {
+                        preview.src = url;
+                        preview.style.display = 'block';
+                        preview.onerror = function () {
+                            preview.style.display = 'none';
+                        };
+                    } else {
+                        preview.style.display = 'none';
+                    }
+
+                    updateSummary();
+                }, 600);
+            });
+        }
+
+        initImagePreview('imageUrlInput', 'urlPreviewImg');
+        initImagePreview('geminiImageUrlInput', 'geminiPreviewImg');
 
         // ── FILE UPLOAD PREVIEW ────────────────────────
         const uploadZone = document.getElementById('uploadZone');
@@ -1112,27 +1177,41 @@
         }
 
         // ── LIVE SUMMARY ──────────────────────────────
-        function updateSummary() {
-            const title    = document.getElementById('tourTitleInput').value.trim();
-            const country  = document.getElementById('countrySelect').value;
-            const city     = document.getElementById('cityInput')?.value.trim();
-            const date     = document.getElementById('tourDateInput').value;
-            const duration = document.getElementById('dayNightHidden').value;
-            const capacity = document.getElementById('capacityInput').value;
+         function updateSummary() {
+             const title    = document.getElementById('tourTitleInput').value.trim();
+             const country  = document.getElementById('countrySelect').value;
+                const city     = document.getElementById('cityInput')?.value.trim();
+                const date     = document.getElementById('tourDateInput').value;
+              const duration = document.getElementById('dayNightHidden').value;
+              const capacity = document.getElementById('capacityInput').value;
 
-            document.getElementById('sumTitle').textContent    = title    || '—';
-            document.getElementById('sumLocation').textContent = (country && city) ? country + ' / ' + city : (country || city || '—');
-            document.getElementById('sumDate').textContent     = date ? formatDate(date) : '—';
-            document.getElementById('sumDuration').textContent = duration  || '—';
-            document.getElementById('sumCapacity').textContent = capacity  ? capacity + ' kişi' : '—';
-        }
+              const geminiUrl = document.getElementById('geminiImageUrlInput')?.value.trim();
+             const videoUrl  = document.getElementById('youtubeVideoUrlInput')?.value.trim();
+
+              document.getElementById('sumTitle').textContent    = title    || '—';
+             document.getElementById('sumLocation').textContent = (country && city) ? country + ' / ' + city : (country || city || '—');
+             document.getElementById('sumDate').textContent     = date ? formatDate(date) : '—';
+              document.getElementById('sumDuration').textContent = duration  || '—';
+             document.getElementById('sumCapacity').textContent = capacity  ? capacity + ' kişi' : '—';
+
+               const sumGemini = document.getElementById('sumGemini');
+             const sumVideo = document.getElementById('sumVideo');
+
+              if (sumGemini) {
+                  sumGemini.textContent = geminiUrl ? 'Eklendi' : '—';
+               }
+
+               if (sumVideo) {
+                  sumVideo.textContent = videoUrl ? 'Eklendi' : '—';
+              }
+            }
 
         function formatDate(dateStr) {
             const [y, m, d] = dateStr.split('-');
             return d + '.' + m + '.' + y;
         }
 
-        ['tourTitleInput','countrySelect','cityInput','tourDateInput','capacityInput'].forEach(function(id) {
+        ['tourTitleInput','countrySelect','cityInput','tourDateInput','capacityInput','geminiImageUrlInput','youtubeVideoUrlInput'].forEach(function(id) {
             const el = document.getElementById(id);
             if (el) el.addEventListener('input', updateSummary);
         });
