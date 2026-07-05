@@ -18,42 +18,105 @@ namespace ProjectTravelin.Controllers
             _tourService = tourService;
         }
 
-        public async Task<IActionResult> AdminTourProgramList()
+        public async Task<IActionResult> AdminTourProgramList(string tourId)
         {
             var values = await _tourProgramService.GetAllTourProgramAsync();
             var tours = await _tourService.GetAllTourAsync();
+
+            if (!string.IsNullOrEmpty(tourId))
+            {
+                values = values
+                    .Where(x => x.TourId == tourId)
+                    .OrderBy(x => x.DayNumber)
+                    .ToList();
+            }
 
             ViewBag.Tours = tours.ToDictionary(
                 x => x.TourId,
                 x => $"{x.Title} - {x.City} / {x.Country}"
             );
 
-            return View(values);
+            ViewBag.SelectedTourId = tourId;
+
+            if (!string.IsNullOrEmpty(tourId))
+            {
+                var selectedTour = tours.FirstOrDefault(x => x.TourId == tourId);
+
+                if (selectedTour != null)
+                {
+                    ViewBag.SelectedTourName = $"{selectedTour.Title} - {selectedTour.City} / {selectedTour.Country}";
+                }
+            }
+
+            return View("~/Views/AdminTourProgram/AdminTourProgramList.cshtml", values);
         }
 
-        public async Task<IActionResult> CreateTourProgram()
+        public async Task<IActionResult> CreateTourProgram(string tourId)
         {
             var tours = await _tourService.GetAllTourAsync();
+
             ViewBag.Tours = tours;
-            return View();
+            ViewBag.SelectedTourId = tourId;
+
+            var model = new CreateTourProgramDto
+            {
+                TourId = tourId,
+                DayNumber = 1,
+                Title = "",
+                Description = "",
+                ImageUrl = ""
+            };
+
+            return View("~/Views/AdminTourProgram/CreateTourProgram.cshtml", model);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateTourProgram(CreateTourProgramDto createTourProgramDto)
         {
-            await _tourProgramService.CreateTourProgramAsync(createTourProgramDto);
-            return RedirectToAction("TourProgramList");
-        }
+            if (string.IsNullOrEmpty(createTourProgramDto.TourId))
+            {
+                var tours = await _tourService.GetAllTourAsync();
 
-        public async Task<IActionResult> DeleteTourProgram(string id)
+                ViewBag.Tours = tours;
+                ViewBag.SelectedTourId = createTourProgramDto.TourId;
+
+                ModelState.AddModelError("TourId", "Lütfen bir tur seçiniz.");
+
+                return View("~/Views/AdminTourProgram/CreateTourProgram.cshtml", createTourProgramDto);
+            }
+
+            if (createTourProgramDto.DayNumber <= 0)
+            {
+                createTourProgramDto.DayNumber = 1;
+            }
+
+            createTourProgramDto.Title = createTourProgramDto.Title ?? "";
+            createTourProgramDto.Description = createTourProgramDto.Description ?? "";
+            createTourProgramDto.ImageUrl = createTourProgramDto.ImageUrl ?? "";
+
+            await _tourProgramService.CreateTourProgramAsync(createTourProgramDto);
+
+            return RedirectToAction("AdminTourProgramList", new { tourId = createTourProgramDto.TourId });
+        }
+        public async Task<IActionResult> DeleteTourProgram(string id, string tourId)
         {
-            await _tourProgramService.DeleteTourProgramAsync(id);
-            return RedirectToAction("TourProgramList");
+            if (!string.IsNullOrEmpty(id))
+            {
+                await _tourProgramService.DeleteTourProgramAsync(id);
+            }
+
+            return RedirectToAction("AdminTourProgramList", new { tourId = tourId });
         }
 
         public async Task<IActionResult> UpdateTourProgram(string id)
         {
             var value = await _tourProgramService.GetTourProgramByIdAsync(id);
+
+            if (value == null)
+            {
+                return NotFound();
+            }
 
             var updateDto = new UpdateTourProgramDto
             {
@@ -66,16 +129,20 @@ namespace ProjectTravelin.Controllers
             };
 
             var tours = await _tourService.GetAllTourAsync();
-            ViewBag.Tours = tours;
 
-            return View(updateDto);
+            ViewBag.Tours = tours;
+            ViewBag.SelectedTourId = value.TourId;
+
+            return View("~/Views/AdminTourProgram/UpdateTourProgram.cshtml", updateDto);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateTourProgram(UpdateTourProgramDto updateTourProgramDto)
         {
             await _tourProgramService.UpdateTourProgramAsync(updateTourProgramDto);
-            return RedirectToAction("TourProgramList");
+
+            return RedirectToAction("AdminTourProgramList", new { tourId = updateTourProgramDto.TourId });
         }
     }
 }

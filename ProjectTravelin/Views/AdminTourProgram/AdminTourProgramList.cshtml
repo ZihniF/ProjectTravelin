@@ -8,6 +8,9 @@
     var totalTourCount = Model?.Select(x => x.TourId).Distinct().Count() ?? 0;
 
     var tourLookup = ViewBag.Tours as Dictionary<string, string> ?? new Dictionary<string, string>();
+
+    var selectedTourId = ViewBag.SelectedTourId as string;
+    var selectedTourName = ViewBag.SelectedTourName as string;
 }
 
 @section Styles {
@@ -395,7 +398,23 @@
 <!-- PAGE HEADER -->
 <div class="page-header">
     <div>
-        <h1 class="page-title">Tur Programları</h1>
+        <h1 class="page-title">
+            @if (!string.IsNullOrEmpty(selectedTourName))
+            {
+                @selectedTourName
+            }
+            else
+            {
+                @:Tur Programları
+            }
+        </h1>
+
+        @if (!string.IsNullOrEmpty(selectedTourName))
+        {
+            <div style="font-size:.85rem;color:#718096;margin-top:.35rem;">
+                Bu tura ait günlük program adımlarını yönetiyorsunuz.
+            </div>
+        }
         <nav aria-label="breadcrumb" class="mt-2">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Admin</a></li>
@@ -404,7 +423,10 @@
         </nav>
     </div>
 
-    <a asp-controller="AdminTourProgram" asp-action="CreateTourProgram" class="btn-submit">
+    <a asp-controller="AdminTourProgram"
+       asp-action="CreateTourProgram"
+       asp-route-tourId="@selectedTourId"
+       class="btn-submit">
         <i class="bi bi-plus-circle-fill"></i>
         Yeni Program Ekle
     </a>
@@ -527,6 +549,7 @@
                                         <a asp-controller="AdminTourProgram"
                                            asp-action="DeleteTourProgram"
                                            asp-route-id="@item.TourProgramId"
+                                           asp-route-tourId="@item.TourId"
                                            class="btn-soft btn-soft-danger js-delete-program">
                                             <i class="bi bi-trash3"></i>
                                             Sil

@@ -1,0 +1,619 @@
+﻿@model ProjectTravelin.Dtos.TourProgramDtos.CreateTourProgramDto
+
+@{
+    ViewData["Title"] = "Yeni Tur Programı Ekle";
+    Layout = "~/Views/Shared/_TourLayout.cshtml";
+
+    var tours = ViewBag.Tours as List<ProjectTravelin.Dtos.TourDtos.ResultTourDto>
+        ?? new List<ProjectTravelin.Dtos.TourDtos.ResultTourDto>();
+
+    var selectedTourId = ViewBag.SelectedTourId as string;
+}
+
+@section Styles {
+    <style>
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1a202c;
+            letter-spacing: -.03em;
+            line-height: 1;
+        }
+
+        .breadcrumb {
+            margin: 0;
+            padding: 0;
+            background: none;
+        }
+
+        .breadcrumb-item {
+            font-size: .8rem;
+        }
+
+            .breadcrumb-item a {
+                color: #2563eb;
+                text-decoration: none;
+            }
+
+            .breadcrumb-item.active {
+                color: #718096;
+            }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .form-section {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            padding: 1.1rem 1.5rem;
+            border-bottom: 1px solid #f0f4f8;
+            background: #fafbfc;
+        }
+
+        .section-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            font-size: .95rem;
+            flex-shrink: 0;
+        }
+
+            .section-icon.blue {
+                background: #eff6ff;
+                color: #2563eb;
+            }
+
+            .section-icon.green {
+                background: #f0fdf4;
+                color: #16a34a;
+            }
+
+            .section-icon.purple {
+                background: #faf5ff;
+                color: #7c3aed;
+            }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: .92rem;
+            color: #1a202c;
+        }
+
+        .section-subtitle {
+            font-size: .75rem;
+            color: #a0aec0;
+            margin-top: 1px;
+        }
+
+        .section-body {
+            padding: 1.5rem;
+        }
+
+        .field-group {
+            margin-bottom: 1.25rem;
+        }
+
+            .field-group:last-child {
+                margin-bottom: 0;
+            }
+
+        .field-label {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            font-size: .78rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: .45rem;
+            letter-spacing: .01em;
+        }
+
+        .required {
+            color: #e53e3e;
+        }
+
+        .field-hint {
+            font-size: .73rem;
+            color: #a0aec0;
+            margin-top: .35rem;
+        }
+
+        .form-control,
+        .form-select {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 9px;
+            padding: .65rem .875rem;
+            font-size: .875rem;
+            color: #1a202c;
+            background: #fff;
+            width: 100%;
+            transition: border-color .15s, box-shadow .15s;
+        }
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: #2563eb;
+                box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+                outline: none;
+            }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 130px;
+            line-height: 1.6;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+            .input-with-icon .input-icon {
+                position: absolute;
+                left: .875rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #a0aec0;
+                font-size: .9rem;
+                pointer-events: none;
+            }
+
+            .input-with-icon .form-control,
+            .input-with-icon .form-select {
+                padding-left: 2.4rem;
+            }
+
+        .text-danger-field {
+            font-size: .73rem;
+            color: #e53e3e;
+            margin-top: .35rem;
+            display: flex;
+            align-items: center;
+            gap: .3rem;
+        }
+
+        .validation-summary-errors {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            color: #c53030;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            font-size: .85rem;
+        }
+
+            .validation-summary-errors ul {
+                margin-bottom: 0;
+            }
+
+        .btn-submit {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: .75rem 1.5rem;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: .9rem;
+            cursor: pointer;
+            transition: all .15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
+            width: 100%;
+            text-decoration: none;
+        }
+
+            .btn-submit:hover {
+                background: #1d4ed8;
+                color: #fff;
+                box-shadow: 0 4px 14px rgba(37,99,235,.35);
+            }
+
+        .btn-draft {
+            background: #fff;
+            color: #4a5568;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            padding: .65rem 1.5rem;
+            font-size: .875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
+            width: 100%;
+            text-decoration: none;
+            margin-top: .75rem;
+        }
+
+            .btn-draft:hover {
+                background: #f7fafc;
+                border-color: #cbd5e0;
+                color: #2d3748;
+            }
+
+        .summary-box {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 1rem;
+            font-size: .8rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: .45rem 0;
+            border-bottom: 1px solid #edf2f7;
+            color: #4a5568;
+        }
+
+            .summary-row:last-child {
+                border-bottom: none;
+            }
+
+            .summary-row .label {
+                color: #a0aec0;
+            }
+
+            .summary-row .value {
+                font-weight: 600;
+                color: #2d3748;
+                text-align: right;
+            }
+
+        .preview-img {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            margin-top: .75rem;
+            display: none;
+        }
+
+        @@media (max-width: 991px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Yeni Tur Programı Ekle</h1>
+        <nav aria-label="breadcrumb" class="mt-2">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Admin</a></li>
+                <li class="breadcrumb-item">
+                    <a asp-controller="AdminTourProgram"
+                       asp-action="AdminTourProgramList"
+                       asp-route-tourId="@selectedTourId">
+                        Tur Programları
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Yeni Program</li>
+            </ol>
+        </nav>
+    </div>
+
+    <a asp-controller="AdminTourProgram"
+       asp-action="AdminTourProgramList"
+       asp-route-tourId="@selectedTourId"
+       class="btn btn-outline-secondary d-flex align-items-center gap-2"
+       style="border-radius:10px;font-size:.875rem;font-weight:500;padding:.55rem 1.1rem;">
+        <i class="bi bi-arrow-left"></i> Listeye Dön
+    </a>
+</div>
+
+<form method="post"
+      asp-controller="AdminTourProgram"
+      asp-action="CreateTourProgram"
+      id="createTourProgramForm">
+
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="All"></div>
+
+    <div class="form-grid">
+        <div class="form-main">
+
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon blue">
+                        <i class="bi bi-map"></i>
+                    </div>
+                    <div>
+                        <div class="section-title">Programın Bağlı Olduğu Tur</div>
+                        <div class="section-subtitle">Bu program adımının hangi tura ait olduğunu seçin</div>
+                    </div>
+                </div>
+
+                <div class="section-body">
+                    <div class="field-group">
+                        <label asp-for="TourId" class="field-label">
+                            <i class="bi bi-compass" style="color:#a0aec0;font-size:.85rem;"></i>
+                            Tur Seçimi <span class="required">*</span>
+                        </label>
+
+                        <div class="input-with-icon">
+                            <i class="bi bi-compass input-icon"></i>
+                            <select asp-for="TourId" class="form-select" id="tourSelect">
+                                <option value="">— Tur seçin —</option>
+
+                                @foreach (var tour in tours)
+                                {
+                                    if (tour.TourId == Model.TourId)
+                                    {
+                                        <option value="@tour.TourId" selected>
+                                            @tour.Title - @tour.City / @tour.Country
+                                        </option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@tour.TourId">
+                                            @tour.Title - @tour.City / @tour.Country
+                                        </option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <span asp-validation-for="TourId" class="text-danger-field">
+                            <i class="bi bi-exclamation-circle"></i><span></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon green">
+                        <i class="bi bi-calendar-week"></i>
+                    </div>
+                    <div>
+                        <div class="section-title">Program Bilgileri</div>
+                        <div class="section-subtitle">Gün numarası, başlık ve açıklama bilgileri</div>
+                    </div>
+                </div>
+
+                <div class="section-body">
+                    <div class="field-group">
+                        <label asp-for="DayNumber" class="field-label">
+                            <i class="bi bi-sun" style="color:#a0aec0;font-size:.85rem;"></i>
+                            Gün Numarası <span class="required">*</span>
+                        </label>
+
+                        <div class="input-with-icon">
+                            <i class="bi bi-sun input-icon"></i>
+                            <input asp-for="DayNumber"
+                                   type="number"
+                                   min="1"
+                                   max="30"
+                                   class="form-control"
+                                   id="dayNumberInput"
+                                   placeholder="Örn: 1" />
+                        </div>
+
+                        <div class="field-hint">
+                            Örneğin: 1. Gün, 2. Gün, 3. Gün şeklinde sıralanır.
+                        </div>
+
+                        <span asp-validation-for="DayNumber" class="text-danger-field">
+                            <i class="bi bi-exclamation-circle"></i><span></span>
+                        </span>
+                    </div>
+
+                    <div class="field-group">
+                        <label asp-for="Title" class="field-label">
+                            <i class="bi bi-tag" style="color:#a0aec0;font-size:.85rem;"></i>
+                            Program Başlığı <span class="required">*</span>
+                        </label>
+
+                        <input asp-for="Title"
+                               class="form-control"
+                               id="programTitleInput"
+                               placeholder="Örn: Varış ve Şehir Turu" />
+
+                        <span asp-validation-for="Title" class="text-danger-field">
+                            <i class="bi bi-exclamation-circle"></i><span></span>
+                        </span>
+                    </div>
+
+                    <div class="field-group">
+                        <label asp-for="Description" class="field-label">
+                            <i class="bi bi-text-left" style="color:#a0aec0;font-size:.85rem;"></i>
+                            Program Açıklaması <span class="required">*</span>
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  id="programDescriptionInput"
+                                  rows="6"
+                                  placeholder="Bu gün içinde yapılacak aktiviteleri yazın..."></textarea>
+
+                        <span asp-validation-for="Description" class="text-danger-field">
+                            <i class="bi bi-exclamation-circle"></i><span></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon purple">
+                        <i class="bi bi-image"></i>
+                    </div>
+                    <div>
+                        <div class="section-title">Program Görseli</div>
+                        <div class="section-subtitle">Bu program adımı için görsel URL veya local path girin</div>
+                    </div>
+                </div>
+
+                <div class="section-body">
+                    <div class="field-group">
+                        <label asp-for="ImageUrl" class="field-label">
+                            <i class="bi bi-link-45deg" style="color:#a0aec0;font-size:.85rem;"></i>
+                            Görsel URL / Path
+                        </label>
+
+                        <div class="input-with-icon">
+                            <i class="bi bi-link-45deg input-icon"></i>
+                            <input asp-for="ImageUrl"
+                                   type="text"
+                                   class="form-control"
+                                   id="imageUrlInput"
+                                   placeholder="/travelin/images/destination/destination1.jpg" />
+                        </div>
+
+                        <div class="field-hint">
+                            Boş bırakılabilir. Örnek: /travelin/images/destination/destination1.jpg
+                        </div>
+
+                        <img src="" alt="Program görsel önizleme" class="preview-img" id="previewImg" />
+
+                        <span asp-validation-for="ImageUrl" class="text-danger-field">
+                            <i class="bi bi-exclamation-circle"></i><span></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="sidebar-panel">
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon blue">
+                        <i class="bi bi-eye"></i>
+                    </div>
+                    <div>
+                        <div class="section-title">Program Özeti</div>
+                        <div class="section-subtitle">Canlı önizleme</div>
+                    </div>
+                </div>
+
+                <div class="section-body">
+                    <div class="summary-box">
+                        <div class="summary-row">
+                            <span class="label">Tur</span>
+                            <span class="value" id="sumTour">—</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Gün</span>
+                            <span class="value" id="sumDay">—</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Başlık</span>
+                            <span class="value" id="sumTitle">—</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Görsel</span>
+                            <span class="value" id="sumImage">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-body">
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        Programı Kaydet
+                    </button>
+
+                    <a asp-controller="AdminTourProgram"
+                       asp-action="AdminTourProgramList"
+                       asp-route-tourId="@selectedTourId"
+                       class="btn-draft">
+                        <i class="bi bi-x"></i>
+                        İptal Et
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const tourSelect = document.getElementById('tourSelect');
+        const dayNumberInput = document.getElementById('dayNumberInput');
+        const programTitleInput = document.getElementById('programTitleInput');
+        const imageUrlInput = document.getElementById('imageUrlInput');
+        const previewImg = document.getElementById('previewImg');
+
+        function updateSummary() {
+            const selectedTourText = tourSelect?.options[tourSelect.selectedIndex]?.text || '—';
+            const day = dayNumberInput?.value || '';
+            const title = programTitleInput?.value.trim() || '';
+            const image = imageUrlInput?.value.trim() || '';
+
+            document.getElementById('sumTour').textContent = tourSelect && tourSelect.value ? selectedTourText : '—';
+            document.getElementById('sumDay').textContent = day ? day + '. Gün' : '—';
+            document.getElementById('sumTitle').textContent = title || '—';
+            document.getElementById('sumImage').textContent = image ? 'Eklendi' : '—';
+
+            if (image) {
+                previewImg.src = image;
+                previewImg.style.display = 'block';
+                previewImg.onerror = function () {
+                    previewImg.style.display = 'none';
+                };
+            } else {
+                previewImg.style.display = 'none';
+            }
+        }
+
+        if (tourSelect) {
+            tourSelect.addEventListener('change', updateSummary);
+        }
+
+        if (dayNumberInput) {
+            dayNumberInput.addEventListener('input', updateSummary);
+        }
+
+        if (programTitleInput) {
+            programTitleInput.addEventListener('input', updateSummary);
+        }
+
+        if (imageUrlInput) {
+            imageUrlInput.addEventListener('input', updateSummary);
+        }
+
+        updateSummary();
+    </script>
+}
