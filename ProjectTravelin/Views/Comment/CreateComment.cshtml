@@ -401,7 +401,7 @@
             <form asp-action="CreateComment" asp-controller="Comment" method="post" id="commentForm">
                 @Html.AntiForgeryToken()
 
-                <input type="text" asp-for="TourId" class="form-control"/>
+                <input type="hidden" asp-for="TourId" />
 
                 <!-- Başlık -->
                 <div class="form-group">
@@ -446,33 +446,7 @@
 
                 <hr class="section-divider">
 
-                <!-- Yorum Tarihi -->
-                <div class="form-group">
-                    <label class="form-label">Yorum Tarihi</label>
-                    <input asp-for="CommentDate"
-                           type="datetime-local"
-                           class="form-control-custom"
-                           id="commentDate" />
-                    <span asp-validation-for="CommentDate" class="field-error visible"></span>
-                </div>
 
-                <!-- Durum Toggle -->
-                <div class="form-group">
-                    <label class="form-label">Yayın Durumu</label>
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <span class="toggle-label">Yorumu Yayınla</span>
-                            <span class="toggle-hint">Kapatırsanız yorum taslak olarak kaydedilir</span>
-                        </div>
-                        <div class="form-check form-switch mb-0">
-                            <input asp-for="IsStatus"
-                                   class="form-check-input"
-                                   type="checkbox"
-                                   id="isStatus"
-                                   role="switch">
-                        </div>
-                    </div>
-                </div>
 
                 <hr class="section-divider">
 
@@ -499,10 +473,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
 
     <script>
-        // --- Set default datetime ---
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        document.getElementById('commentDate').value = now.toISOString().slice(0,16);
 
         // --- Star Rating (RTL trick with CSS reversed) ---
         const stars = document.querySelectorAll('#starGroup label');

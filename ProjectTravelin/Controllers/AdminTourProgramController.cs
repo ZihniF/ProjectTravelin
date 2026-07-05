@@ -18,7 +18,7 @@ namespace ProjectTravelin.Controllers
             _tourService = tourService;
         }
 
-        public async Task<IActionResult> TourProgramList()
+        public async Task<IActionResult> AdminTourProgramList()
         {
             var values = await _tourProgramService.GetAllTourProgramAsync();
             var tours = await _tourService.GetAllTourAsync();
