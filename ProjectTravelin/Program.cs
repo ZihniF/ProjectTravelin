@@ -4,6 +4,7 @@ using ProjectTravelin.Services.CommentServices;
 using ProjectTravelin.Services.TourProgramServices;
 using ProjectTravelin.Services.TourServices;
 using ProjectTravelin.Services.BookingServices;
+using ProjectTravelin.Services.EmailServices;
 using ProjectTravelin.Settings;
 using System.Reflection;
 
@@ -14,6 +15,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<ITourProgramService, TourProgramService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
@@ -23,6 +25,9 @@ builder.Services.AddScoped<IDatabaseSettings>(sp =>
 {
     return sp.GetRequiredService<IOptions<DatabaseSettings>>().Value;
 });
+
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings"));
 
 
 

@@ -355,8 +355,11 @@
 
         <div class="sidebar-section">
             <div class="sidebar-section-label">İşlemler</div>
-            <a href="#" class="nav-item-link">
-                <i class="bi bi-calendar2-check"></i> Rezervasyonlar
+            <a asp-controller="AdminBooking"
+               asp-action="BookingList"
+               class="menu-link">
+                <i class="bi bi-calendar-check"></i>
+                <span>Rezervasyonlar</span>
             </a>
             <a href="#" class="nav-item-link">
                 <i class="bi bi-people"></i> Müşteriler

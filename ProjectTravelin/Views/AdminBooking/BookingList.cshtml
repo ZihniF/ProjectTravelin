@@ -1,0 +1,447 @@
+﻿@model List<ProjectTravelin.Dtos.BookingDtos.ResultBookingDto>
+
+@{
+    ViewData["Title"] = "Rezervasyonlar";
+    Layout = "~/Views/Shared/_TourLayout.cshtml";
+
+    var tourLookup = ViewBag.Tours as Dictionary<string, string> ?? new Dictionary<string, string>();
+
+    int totalBookingCount = ViewBag.TotalBookingCount ?? 0;
+    int pendingBookingCount = ViewBag.PendingBookingCount ?? 0;
+    int approvedBookingCount = ViewBag.ApprovedBookingCount ?? 0;
+    int cancelledBookingCount = ViewBag.CancelledBookingCount ?? 0;
+}
+
+@section Styles {
+    <style>
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1a202c;
+            letter-spacing: -.03em;
+            line-height: 1;
+        }
+
+        .page-subtitle {
+            color: #718096;
+            font-size: .875rem;
+            margin-top: .4rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 1.1rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,.04);
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: .78rem;
+            font-weight: 700;
+            margin-bottom: .45rem;
+        }
+
+        .stat-value {
+            color: #1a202c;
+            font-size: 1.45rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .table-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,.05);
+        }
+
+        .table-header {
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid #edf2f7;
+            background: #fafbfc;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .table-title {
+            font-family: var(--font-display);
+            font-weight: 800;
+            color: #1a202c;
+            font-size: .98rem;
+        }
+
+        .table-subtitle {
+            color: #a0aec0;
+            font-size: .76rem;
+            margin-top: .15rem;
+        }
+
+        .booking-table {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+            .booking-table thead th {
+                background: #fff;
+                color: #718096;
+                font-size: .72rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: .05em;
+                border-bottom: 1px solid #edf2f7;
+                padding: .9rem 1rem;
+                white-space: nowrap;
+            }
+
+            .booking-table tbody td {
+                vertical-align: middle;
+                border-bottom: 1px solid #f1f5f9;
+                padding: 1rem;
+                color: #4a5568;
+                font-size: .84rem;
+            }
+
+            .booking-table tbody tr:hover {
+                background: #fafbfc;
+            }
+
+        .customer-name {
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: .2rem;
+        }
+
+        .customer-contact {
+            color: #718096;
+            font-size: .76rem;
+        }
+
+        .tour-name {
+            font-weight: 700;
+            color: #2d3748;
+            max-width: 260px;
+            line-height: 1.4;
+        }
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            border-radius: 999px;
+            padding: .38rem .7rem;
+            font-size: .72rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .badge-pending {
+            background: #fffbeb;
+            color: #b45309;
+        }
+
+        .badge-approved {
+            background: #ecfdf5;
+            color: #15803d;
+        }
+
+        .badge-cancelled {
+            background: #fff5f5;
+            color: #c53030;
+        }
+
+        .btn-action {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            display: inline-grid;
+            place-items: center;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #4a5568;
+            text-decoration: none;
+            transition: .15s;
+            margin-right: .25rem;
+            font-size: .85rem;
+        }
+
+            .btn-action:hover {
+                text-decoration: none;
+                transform: translateY(-1px);
+            }
+
+        .btn-approve:hover {
+            background: #ecfdf5;
+            border-color: #bbf7d0;
+            color: #15803d;
+        }
+
+        .btn-pending:hover {
+            background: #fffbeb;
+            border-color: #fde68a;
+            color: #b45309;
+        }
+
+        .btn-cancel:hover {
+            background: #fff5f5;
+            border-color: #fecaca;
+            color: #c53030;
+        }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+
+        .empty-state {
+            padding: 3rem 1rem;
+            text-align: center;
+            color: #718096;
+        }
+
+        .empty-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            background: #f8fafc;
+            color: #a0aec0;
+            margin: 0 auto 1rem;
+            font-size: 1.8rem;
+        }
+
+        @@media(max-width: 1199px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+            }
+        }
+
+        @@media(max-width: 575px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Rezervasyonlar</h1>
+        <div class="page-subtitle">
+            Kullanıcılardan gelen tur rezervasyon taleplerini buradan yönetebilirsiniz.
+        </div>
+    </div>
+</div>
+@if (TempData["BookingStatusMessage"] != null)
+{
+    var messageType = TempData["BookingStatusType"]?.ToString();
+
+    var alertStyle = messageType == "success"
+        ? "background:#ecfdf5;border:1px solid #bbf7d0;color:#166534;"
+        : messageType == "warning"
+            ? "background:#fffbeb;border:1px solid #fde68a;color:#92400e;"
+            : "background:#fff5f5;border:1px solid #fecaca;color:#991b1b;";
+
+    var alertIcon = messageType == "success"
+        ? "bi-check-circle"
+        : messageType == "warning"
+            ? "bi-exclamation-triangle"
+            : "bi-x-circle";
+
+    <div style="@alertStyle padding:14px 18px;border-radius:12px;margin-bottom:1.5rem;font-weight:700;font-size:.9rem;">
+        <i class="bi @alertIcon"></i>
+        @TempData["BookingStatusMessage"]
+    </div>
+}
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">Toplam Rezervasyon</div>
+        <div class="stat-value">@totalBookingCount</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Beklemede</div>
+        <div class="stat-value">@pendingBookingCount</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Onaylandı</div>
+        <div class="stat-value">@approvedBookingCount</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">İptal Edildi</div>
+        <div class="stat-value">@cancelledBookingCount</div>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-header">
+        <div>
+            <div class="table-title">Rezervasyon Listesi</div>
+            <div class="table-subtitle">Son gelen rezervasyonlar en üstte listelenir.</div>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="booking-table">
+                <thead>
+                    <tr>
+                        <th>Müşteri</th>
+                        <th>Tur</th>
+                        <th>Kişi</th>
+                        <th>Tur Tarihi</th>
+                        <th>Talep Tarihi</th>
+                        <th>Durum</th>
+                        <th style="width:190px;">İşlemler</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var tourName = tourLookup.ContainsKey(item.TourId)
+                            ? tourLookup[item.TourId]
+                            : "Tur bilgisi bulunamadı";
+
+                        var statusClass = item.Status == "Onaylandı"
+                            ? "badge-approved"
+                            : item.Status == "İptal Edildi"
+                                ? "badge-cancelled"
+                                : "badge-pending";
+
+                        var statusIcon = item.Status == "Onaylandı"
+                            ? "bi-check-circle"
+                            : item.Status == "İptal Edildi"
+                                ? "bi-x-circle"
+                                : "bi-hourglass-split";
+
+                        <tr>
+                            <td>
+                                <div class="customer-name">@item.NameSurname</div>
+                                <div class="customer-contact">
+                                    <i class="bi bi-envelope"></i> @item.Email
+                                </div>
+                                <div class="customer-contact">
+                                    <i class="bi bi-telephone"></i> @item.Phone
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="tour-name">@tourName</div>
+                            </td>
+
+                            <td>
+                                <strong>@item.PersonCount</strong> kişi
+                            </td>
+
+                            <td>
+                                @item.BookingDate.ToString("dd.MM.yyyy")
+                            </td>
+
+                            <td>
+                                @item.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                            </td>
+
+                            <td>
+                                <span class="badge-status @statusClass">
+                                    <i class="bi @statusIcon"></i>
+                                    @item.Status
+                                </span>
+                            </td>
+
+                            <td>
+                                <a asp-controller="AdminBooking"
+                                   asp-action="ApprovedBooking"
+                                   asp-route-id="@item.BookingId"
+                                   class="btn-action btn-approve"
+                                   title="Onayla">
+                                    <i class="bi bi-check-lg"></i>
+                                </a>
+
+                                <a asp-controller="AdminBooking"
+                                   asp-action="PendingBooking"
+                                   asp-route-id="@item.BookingId"
+                                   class="btn-action btn-pending"
+                                   title="Beklemeye Al">
+                                    <i class="bi bi-hourglass-split"></i>
+                                </a>
+
+                                <a asp-controller="AdminBooking"
+                                   asp-action="CancelBooking"
+                                   asp-route-id="@item.BookingId"
+                                   class="btn-action btn-cancel"
+                                   title="İptal Et">
+                                    <i class="bi bi-x-lg"></i>
+                                </a>
+
+                                <a asp-controller="AdminBooking"
+                                   asp-action="DeleteBooking"
+                                   asp-route-id="@item.BookingId"
+                                   class="btn-action btn-delete js-delete-booking"
+                                   title="Sil">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="bi bi-calendar-x"></i>
+            </div>
+
+            <h5>Henüz rezervasyon bulunmuyor</h5>
+            <p>Kullanıcılar rezervasyon yaptığında burada listelenecek.</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.js-delete-booking').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                const confirmed = confirm('Bu rezervasyonu silmek istediğinize emin misiniz?');
+
+                if (!confirmed) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}
