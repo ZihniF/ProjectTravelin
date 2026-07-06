@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ProjectTravelin.Dtos.BookingDtos;
 using ProjectTravelin.Dtos.CategoryDtos;
 using ProjectTravelin.Dtos.CommentDtos;
 using ProjectTravelin.Dtos.TourDtos;
@@ -32,6 +33,11 @@ namespace ProjectTravelin.Mapping
             CreateMap<TourProgram, ResultTourProgramDto>().ReverseMap();
             CreateMap<TourProgram, UpdateTourProgramDto>().ReverseMap();
             CreateMap<TourProgram, GetTourProgramByIdDto>().ReverseMap();
+
+            CreateMap<Booking, CreateBookingDto>().ReverseMap();
+            CreateMap<Booking, ResultBookingDto>().ReverseMap();
+            CreateMap<Booking, GetBookingByIdDto>().ReverseMap();
+            CreateMap<Booking, UpdateBookingDto>().ReverseMap();
 
 
         }

@@ -3,6 +3,7 @@ using ProjectTravelin.Services.CategoryServices;
 using ProjectTravelin.Services.CommentServices;
 using ProjectTravelin.Services.TourProgramServices;
 using ProjectTravelin.Services.TourServices;
+using ProjectTravelin.Services.BookingServices;
 using ProjectTravelin.Settings;
 using System.Reflection;
 
@@ -12,6 +13,7 @@ builder.Services.AddScoped<ITourService, TourService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<ITourProgramService, TourProgramService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

@@ -654,7 +654,7 @@
                         </label>
                         <input asp-for="Title" class="form-control" placeholder="Örn: Kapadokya Balon Turu - 3 Gece 4 Gün" maxlength="120" id="tourTitleInput" />
                         <div class="char-counter" id="titleCounter">0 / 120</div>
-                        <span asp-validation-for="Title" class="text-danger-field"><i class="bi bi-exclamation-circle"></i><span></span></span>
+                        <span asp-validation-for="Title" class="text-danger-field"></span>
                     </div>
 
                     <!-- Açıklama -->
@@ -665,7 +665,7 @@
                         </label>
                         <textarea asp-for="Description" class="form-control" placeholder="Tur hakkında detaylı açıklama yazın..." maxlength="1000" id="descInput" rows="5"></textarea>
                         <div class="char-counter" id="descCounter">0 / 1000</div>
-                        <span asp-validation-for="Description" class="text-danger-field"><i class="bi bi-exclamation-circle"></i><span></span></span>
+                        <span asp-validation-for="Description" class="text-danger-field"></span>
                     </div>
                 </div>
             </div>
@@ -706,7 +706,7 @@
                                         <option value="Diğer">🌍 Diğer</option>
                                     </select>
                                 </div>
-                                <span asp-validation-for="Country" class="text-danger-field"><i class="bi bi-exclamation-circle"></i><span></span></span>
+                                <span asp-validation-for="Country" class="text-danger-field"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -719,7 +719,7 @@
                                     <i class="bi bi-geo-alt input-icon"></i>
                                     <input asp-for="City" class="form-control" placeholder="Örn: Nevşehir, Kapadokya" id="cityInput" />
                                 </div>
-                                <span asp-validation-for="City" class="text-danger-field"><i class="bi bi-exclamation-circle"></i><span></span></span>
+                                <span asp-validation-for="City" class="text-danger-field"></span>
                             </div>
                         </div>
                     </div>
@@ -750,7 +750,7 @@
                                            min="@DateTime.Now.ToString("yyyy-MM-dd")" />
                                 </div>
                                 <div class="field-hint"><i class="bi bi-info-circle me-1"></i>Bugünden önceki tarih seçilemez.</div>
-                                <span asp-validation-for="TourDate" class="text-danger-field"><i class="bi bi-exclamation-circle"></i><span></span></span>
+                                <span asp-validation-for="TourDate" class="text-danger-field"></span>
                             </div>
                         </div>
 
@@ -771,7 +771,7 @@
                                     </button>
                                 </div>
                                 <div class="field-hint"><i class="bi bi-info-circle me-1"></i>Maksimum katılımcı sayısı (1–500)</div>
-                                <span asp-validation-for="Capacity" class="text-danger-field"><i class="bi bi-exclamation-circle"></i><span></span></span>
+                                <span asp-validation-for="Capacity" class="text-danger-field"></span>
                             </div>
                         </div>
 
@@ -802,7 +802,7 @@
                                 <div class="field-hint" id="durationPreview">
                                     <i class="bi bi-clock me-1"></i>Önizleme: <strong id="durationText">3 Gün / 2 Gece</strong>
                                 </div>
-                                <span asp-validation-for="DayNight" class="text-danger-field"><i class="bi bi-exclamation-circle"></i><span></span></span>
+                                <span asp-validation-for="DayNight" class="text-danger-field"></span>
                             </div>
                         </div>
                     </div>
@@ -831,7 +831,7 @@
                         </div>
                         <div class="field-hint"><i class="bi bi-info-circle me-1"></i>JPEG, PNG, WebP desteklenir.</div>
                         <img src="" alt="Görsel önizleme" class="url-preview-thumb" id="urlPreviewImg" />
-                        <span asp-validation-for="ImageUrl" class="text-danger-field"><i class="bi bi-exclamation-circle"></i><span></span></span>
+                        <span asp-validation-for="ImageUrl" class="text-danger-field"></span>
                     </div>
 
                     <!-- Ayırıcı -->

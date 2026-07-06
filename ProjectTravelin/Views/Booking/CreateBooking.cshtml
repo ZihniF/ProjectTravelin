@@ -1,0 +1,596 @@
+﻿@model ProjectTravelin.Dtos.BookingDtos.CreateBookingDto
+
+@{
+    Layout = null;
+
+    var tour = ViewBag.Tour as ProjectTravelin.Dtos.TourDtos.GetTourByIdDto;
+
+    var tours = ViewBag.Tours as List<ProjectTravelin.Dtos.TourDtos.ResultTourDto>
+        ?? new List<ProjectTravelin.Dtos.TourDtos.ResultTourDto>();
+
+    var maxPersonCount = tour != null && tour.Capacity > 0 ? tour.Capacity : 20;
+}
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rezervasyon Yap</title>
+
+    <link href="/travelin/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/travelin/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/travelin/css/plugin.css" rel="stylesheet" type="text/css">
+    <link href="/travelin/css/flaticon.css" rel="stylesheet" type="text/css">
+    <link href="/travelin/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <style>
+            body {
+                background: #f5f7fb;
+            }
+
+            .booking-page {
+                padding: 70px 0;
+                min-height: 100vh;
+            }
+
+            .booking-card {
+                background: #fff;
+                border-radius: 22px;
+                overflow: hidden;
+                box-shadow: 0 18px 45px rgba(15, 23, 42, .10);
+            }
+
+            .booking-image-area {
+                position: relative;
+                height: 100%;
+                min-height: 620px;
+                background: #0f172a;
+            }
+
+                .booking-image-area img {
+                    width: 100%;
+                    height: 100%;
+                    min-height: 620px;
+                    object-fit: cover;
+                    display: block;
+                }
+
+            .booking-image-overlay {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(to top, rgba(15,23,42,.85), rgba(15,23,42,.10));
+                display: flex;
+                align-items: flex-end;
+                padding: 35px;
+            }
+
+            .tour-image-title {
+                color: #fff;
+            }
+
+                .tour-image-title span {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 7px;
+                    background: rgba(255,255,255,.16);
+                    backdrop-filter: blur(8px);
+                    padding: 8px 14px;
+                    border-radius: 999px;
+                    font-size: 13px;
+                    font-weight: 700;
+                    margin-bottom: 14px;
+                }
+
+                .tour-image-title h2 {
+                    color: #fff;
+                    font-size: 30px;
+                    font-weight: 800;
+                    line-height: 1.25;
+                    margin-bottom: 0;
+                }
+
+            .booking-form-area {
+                padding: 42px;
+            }
+
+            .back-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                color: #64748b;
+                font-size: 14px;
+                font-weight: 700;
+                text-decoration: none;
+                margin-bottom: 20px;
+                transition: .2s;
+            }
+
+                .back-link:hover {
+                    color: #2563eb;
+                    text-decoration: none;
+                }
+
+            .booking-subtitle {
+                color: #f56960;
+                font-size: 14px;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: .06em;
+                margin-bottom: 8px;
+            }
+
+            .booking-title {
+                color: #111827;
+                font-size: 32px;
+                font-weight: 800;
+                margin-bottom: 12px;
+            }
+
+            .booking-desc {
+                color: #64748b;
+                font-size: 15px;
+                line-height: 1.7;
+                margin-bottom: 25px;
+            }
+
+            .tour-info-list {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                margin-bottom: 28px;
+            }
+
+            .tour-info-item {
+                background: #f8fafc;
+                border: 1px solid #e5e7eb;
+                border-radius: 14px;
+                padding: 14px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .tour-info-icon {
+                width: 40px;
+                height: 40px;
+                border-radius: 12px;
+                background: #fff0ef;
+                color: #f56960;
+                display: grid;
+                place-items: center;
+                flex-shrink: 0;
+                font-size: 16px;
+            }
+
+            .tour-info-text small {
+                display: block;
+                color: #94a3b8;
+                font-size: 12px;
+                font-weight: 700;
+                margin-bottom: 2px;
+            }
+
+            .tour-info-text strong {
+                display: block;
+                color: #1f2937;
+                font-size: 14px;
+                font-weight: 800;
+            }
+
+            .booking-form-box {
+                background: #fff;
+            }
+
+            .form-group-custom {
+                margin-bottom: 18px;
+            }
+
+            .form-label-custom {
+                display: block;
+                font-size: 13px;
+                color: #374151;
+                font-weight: 800;
+                margin-bottom: 8px;
+            }
+
+            .form-control-custom {
+                width: 100%;
+                height: 50px;
+                border: 1.5px solid #e2e8f0;
+                border-radius: 13px;
+                padding: 0 15px;
+                color: #111827;
+                font-size: 14px;
+                transition: .2s;
+                background: #fff;
+            }
+
+                .form-control-custom:focus {
+                    border-color: #f56960;
+                    box-shadow: 0 0 0 4px rgba(245, 105, 96, .12);
+                    outline: none;
+                }
+
+            textarea.form-control-custom {
+                height: 115px;
+                resize: vertical;
+                padding-top: 13px;
+                line-height: 1.6;
+            }
+
+            .booking-summary {
+                background: linear-gradient(135deg, #fff7f6, #f8fafc);
+                border: 1px solid #ffe0dd;
+                border-radius: 16px;
+                padding: 18px;
+                margin-bottom: 24px;
+            }
+
+            .summary-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 15px;
+                border-bottom: 1px solid rgba(245,105,96,.18);
+                padding: 9px 0;
+                font-size: 14px;
+            }
+
+                .summary-row:last-child {
+                    border-bottom: none;
+                }
+
+                .summary-row span {
+                    color: #64748b;
+                    font-weight: 700;
+                }
+
+                .summary-row strong {
+                    color: #111827;
+                    font-weight: 800;
+                    text-align: right;
+                }
+
+            .btn-booking-submit {
+                width: 100%;
+                border: none;
+                border-radius: 14px;
+                background: #f56960;
+                color: #fff;
+                height: 54px;
+                font-size: 15px;
+                font-weight: 800;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 9px;
+                transition: .2s;
+                cursor: pointer;
+            }
+
+                .btn-booking-submit:hover {
+                    background: #e45850;
+                    color: #fff;
+                    box-shadow: 0 10px 24px rgba(245,105,96,.28);
+                }
+
+            .success-alert {
+                background: #ecfdf5;
+                border: 1px solid #bbf7d0;
+                color: #166534;
+                border-radius: 14px;
+                padding: 15px 17px;
+                font-size: 14px;
+                font-weight: 800;
+                margin-bottom: 22px;
+                display: flex;
+                align-items: center;
+                gap: 9px;
+            }
+
+            .text-danger-field {
+                display: block;
+                color: #dc2626;
+                font-size: 12px;
+                font-weight: 700;
+                margin-top: 6px;
+            }
+
+            .validation-summary-errors {
+                background: #fff5f5;
+                border: 1px solid #fecaca;
+                color: #dc2626;
+                padding: 14px 16px;
+                border-radius: 12px;
+                margin-bottom: 18px;
+                font-size: 13px;
+                font-weight: 700;
+            }
+
+                .validation-summary-errors ul {
+                    margin-bottom: 0;
+                }
+
+            @@media(max-width: 991px) {
+                .booking-image-area,
+                .booking-image-area img {
+                    min-height: 320px;
+                }
+
+                .booking-form-area {
+                    padding: 28px;
+                }
+
+                .tour-info-list {
+                    grid-template-columns: 1fr;
+                }
+
+                .booking-title {
+                    font-size: 26px;
+                }
+            }
+
+            @@media(max-width: 575px) {
+                .booking-page {
+                    padding: 35px 0;
+                }
+
+                .booking-form-area {
+                    padding: 22px;
+                }
+            }
+    </style>
+</head>
+
+<body>
+
+    <div class="booking-page">
+        <div class="container">
+            <div class="booking-card">
+                <div class="row g-0">
+
+                    <div class="col-lg-5">
+                        <div class="booking-image-area">
+                            @if (tour != null && !string.IsNullOrWhiteSpace(tour.ImageUrl))
+                            {
+                                <img src="@tour.ImageUrl" alt="@tour.Title" />
+                            }
+                            else
+                            {
+                                <img src="/travelin/images/destination/destination1.jpg" alt="Tur Görseli" />
+                            }
+
+                            <div class="booking-image-overlay">
+                                <div class="tour-image-title">
+                                    <span>
+                                        <i class="fa fa-map-marker"></i>
+                                        @(tour != null ? $"{tour.City} / {tour.Country}" : "Tur Rezervasyonu")
+                                    </span>
+
+                                    <h2>
+                                        @(tour != null ? tour.Title : "Rezervasyon Yap")
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-7">
+                        <div class="booking-form-area">
+
+                            <a href="/Tour/TourDetail/@Model.TourId" class="back-link">
+                                <i class="fa fa-arrow-left"></i>
+                                Tur Detayına Dön
+                            </a>
+
+                            @if (TempData["BookingSuccess"] != null)
+                            {
+                                <div class="success-alert">
+                                    <i class="fa fa-check-circle"></i>
+                                    @TempData["BookingSuccess"]
+                                </div>
+                            }
+
+                            <div class="booking-subtitle">Rezervasyon Formu</div>
+                            <h1 class="booking-title">Rezervasyon Yap</h1>
+                            <p class="booking-desc">
+                                Rezervasyon talebinizi oluşturmak için aşağıdaki bilgileri doldurun.
+                                Talebiniz admin onayından sonra değerlendirilecektir.
+                            </p>
+
+                            @if (tour != null)
+                            {
+                                <div class="tour-info-list">
+                                    <div class="tour-info-item">
+                                        <div class="tour-info-icon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <div class="tour-info-text">
+                                            <small>Tur Tarihi</small>
+                                            <strong>@tour.TourDate.ToString("dd.MM.yyyy")</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="tour-info-item">
+                                        <div class="tour-info-icon">
+                                            <i class="fa fa-clock-o"></i>
+                                        </div>
+                                        <div class="tour-info-text">
+                                            <small>Süre</small>
+                                            <strong>@tour.DayNight</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="tour-info-item">
+                                        <div class="tour-info-icon">
+                                            <i class="fa fa-users"></i>
+                                        </div>
+                                        <div class="tour-info-text">
+                                            <small>Kapasite</small>
+                                            <strong>@tour.Capacity kişi</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="tour-info-item">
+                                        <div class="tour-info-icon">
+                                            <i class="fa fa-hourglass-half"></i>
+                                        </div>
+                                        <div class="tour-info-text">
+                                            <small>Durum</small>
+                                            <strong>Beklemede</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="booking-summary">
+                                <div class="summary-row">
+                                    <span>Rezervasyon Durumu</span>
+                                    <strong>Beklemede</strong>
+                                </div>
+
+                                <div class="summary-row">
+                                    <span>Rezervasyon Tarihi</span>
+                                    <strong>@Model.BookingDate.ToString("dd.MM.yyyy")</strong>
+                                </div>
+
+                                <div class="summary-row">
+                                    <span>Kişi Sayısı</span>
+                                    <strong id="personSummary">@Model.PersonCount kişi</strong>
+                                </div>
+                            </div>
+
+                            <form method="post"
+                                  asp-controller="Booking"
+                                  asp-action="CreateBooking"
+                                  class="booking-form-box">
+
+                                @Html.AntiForgeryToken()
+
+                                @if (tour != null)
+                                {
+                                    <input type="hidden" asp-for="TourId" />
+                                }
+                                else
+                                {
+                                    <div class="form-group-custom">
+                                        <label asp-for="TourId" class="form-label-custom">Tur Seçiniz</label>
+
+                                        <select asp-for="TourId" class="form-control-custom" required>
+                                            <option value="">— Rezervasyon yapılacak turu seçin —</option>
+
+                                            @foreach (var item in tours)
+                                            {
+                                                <option value="@item.TourId">
+                                                    @item.Title - @item.City / @item.Country
+                                                </option>
+                                            }
+                                        </select>
+
+                                        <span asp-validation-for="TourId" class="text-danger-field"></span>
+                                    </div>
+                                }
+
+                                <input type="hidden" asp-for="BookingDate" />
+
+                                <div asp-validation-summary="All"></div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group-custom">
+                                            <label asp-for="NameSurname" class="form-label-custom">Ad Soyad</label>
+                                            <input asp-for="NameSurname"
+                                                   class="form-control-custom"
+                                                   placeholder="Adınızı ve soyadınızı yazın"
+                                                   required />
+                                            <span asp-validation-for="NameSurname" class="text-danger-field"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group-custom">
+                                            <label asp-for="Phone" class="form-label-custom">Telefon</label>
+                                            <input asp-for="Phone"
+                                                   type="tel"
+                                                   class="form-control-custom"
+                                                   placeholder="05xx xxx xx xx"
+                                                   required />
+                                            <span asp-validation-for="Phone" class="text-danger-field"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group-custom">
+                                            <label asp-for="Email" class="form-label-custom">E-Posta</label>
+                                            <input asp-for="Email"
+                                                   type="email"
+                                                   class="form-control-custom"
+                                                   placeholder="ornek@mail.com"
+                                                   required />
+                                            <span asp-validation-for="Email" class="text-danger-field"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group-custom">
+                                            <label asp-for="PersonCount" class="form-label-custom">Kişi Sayısı</label>
+                                            <input asp-for="PersonCount"
+                                                   type="number"
+                                                   min="1"
+                                                   max="@maxPersonCount"
+                                                   class="form-control-custom"
+                                                   id="personCountInput"
+                                                   required />
+                                            <span asp-validation-for="PersonCount" class="text-danger-field"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-group-custom">
+                                            <label asp-for="Note" class="form-label-custom">Not</label>
+                                            <textarea asp-for="Note"
+                                                      class="form-control-custom"
+                                                      placeholder="Varsa özel isteğinizi veya ek notunuzu yazabilirsiniz."></textarea>
+                                            <span asp-validation-for="Note" class="text-danger-field"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn-booking-submit">
+                                    <i class="fa fa-paper-plane"></i>
+                                    Rezervasyon Talebi Gönder
+                                </button>
+
+                            </form>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/travelin/js/jquery-3.5.1.min.js"></script>
+    <script src="/travelin/js/bootstrap.min.js"></script>
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const personInput = document.getElementById('personCountInput');
+        const personSummary = document.getElementById('personSummary');
+
+        if (personInput && personSummary) {
+        function updatePersonSummary() {
+        const value = personInput.value || 1;
+        personSummary.textContent = value + ' kişi';
+        }
+
+        personInput.addEventListener('input', updatePersonSummary);
+        updatePersonSummary();
+        }
+    </script>
+
+</body>
+</html>

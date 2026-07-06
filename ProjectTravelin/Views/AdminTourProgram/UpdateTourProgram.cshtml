@@ -1,13 +1,13 @@
-﻿@model ProjectTravelin.Dtos.TourProgramDtos.CreateTourProgramDto
+﻿@model ProjectTravelin.Dtos.TourProgramDtos.UpdateTourProgramDto
 
 @{
-    ViewData["Title"] = "Yeni Tur Programı Ekle";
+    ViewData["Title"] = "Tur Programı Güncelle";
     Layout = "~/Views/Shared/_TourLayout.cshtml";
 
     var tours = ViewBag.Tours as List<ProjectTravelin.Dtos.TourDtos.ResultTourDto>
         ?? new List<ProjectTravelin.Dtos.TourDtos.ResultTourDto>();
 
-    var selectedTourId = ViewBag.SelectedTourId as string;
+    var selectedTourId = ViewBag.SelectedTourId as string ?? Model.TourId;
 }
 
 @section Styles {
@@ -193,10 +193,13 @@
             font-size: .73rem;
             color: #e53e3e;
             margin-top: .35rem;
-            display: flex;
-            align-items: center;
-            gap: .3rem;
+            display: block;
         }
+
+            .text-danger-field.field-validation-error::before {
+                content: "⚠ ";
+                font-weight: 700;
+            }
 
         .validation-summary-errors {
             background: #fff5f5;
@@ -312,7 +315,7 @@
 
 <div class="page-header">
     <div>
-        <h1 class="page-title">Yeni Tur Programı Ekle</h1>
+        <h1 class="page-title">Tur Programı Güncelle</h1>
         <nav aria-label="breadcrumb" class="mt-2">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Admin</a></li>
@@ -323,7 +326,7 @@
                         Tur Programları
                     </a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">Yeni Program</li>
+                <li class="breadcrumb-item active" aria-current="page">Program Güncelle</li>
             </ol>
         </nav>
     </div>
@@ -339,10 +342,12 @@
 
 <form method="post"
       asp-controller="AdminTourProgram"
-      asp-action="CreateTourProgram"
-      id="createTourProgramForm">
+      asp-action="UpdateTourProgram"
+      id="updateTourProgramForm">
 
     @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="TourProgramId" />
 
     <div asp-validation-summary="All"></div>
 
@@ -374,25 +379,14 @@
 
                                 @foreach (var tour in tours)
                                 {
-                                    if (tour.TourId == Model.TourId)
-                                    {
-                                        <option value="@tour.TourId" selected>
-                                            @tour.Title - @tour.City / @tour.Country
-                                        </option>
-                                    }
-                                    else
-                                    {
-                                        <option value="@tour.TourId">
-                                            @tour.Title - @tour.City / @tour.Country
-                                        </option>
-                                    }
+                                    <option value="@tour.TourId">
+                                        @tour.Title - @tour.City / @tour.Country
+                                    </option>
                                 }
                             </select>
                         </div>
 
-                        <span asp-validation-for="TourId" class="text-danger-field">
-                            
-                        </span>
+                        <span asp-validation-for="TourId" class="text-danger-field"></span>
                     </div>
                 </div>
             </div>
@@ -430,9 +424,7 @@
                             Örneğin: 1. Gün, 2. Gün, 3. Gün şeklinde sıralanır.
                         </div>
 
-                        <span asp-validation-for="DayNumber" class="text-danger-field">
-                            
-                        </span>
+                        <span asp-validation-for="DayNumber" class="text-danger-field"></span>
                     </div>
 
                     <div class="field-group">
@@ -446,9 +438,7 @@
                                id="programTitleInput"
                                placeholder="Örn: Varış ve Şehir Turu" />
 
-                        <span asp-validation-for="Title" class="text-danger-field">
-                           
-                        </span>
+                        <span asp-validation-for="Title" class="text-danger-field"></span>
                     </div>
 
                     <div class="field-group">
@@ -463,9 +453,7 @@
                                   rows="6"
                                   placeholder="Bu gün içinde yapılacak aktiviteleri yazın..."></textarea>
 
-                        <span asp-validation-for="Description" class="text-danger-field">
-                            
-                        </span>
+                        <span asp-validation-for="Description" class="text-danger-field"></span>
                     </div>
                 </div>
             </div>
@@ -503,9 +491,7 @@
 
                         <img src="" alt="Program görsel önizleme" class="preview-img" id="previewImg" />
 
-                        <span asp-validation-for="ImageUrl" class="text-danger-field">
-                            
-                        </span>
+                        <span asp-validation-for="ImageUrl" class="text-danger-field"></span>
                     </div>
                 </div>
             </div>
@@ -549,8 +535,8 @@
             <div class="form-section">
                 <div class="section-body">
                     <button type="submit" class="btn-submit" id="submitBtn">
-                        <i class="bi bi-plus-circle-fill"></i>
-                        Programı Kaydet
+                        <i class="bi bi-check-circle-fill"></i>
+                        Programı Güncelle
                     </button>
 
                     <a asp-controller="AdminTourProgram"

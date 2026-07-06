@@ -123,9 +123,9 @@ namespace ProjectTravelin.Controllers
                 TourProgramId = value.TourProgramId,
                 TourId = value.TourId,
                 DayNumber = value.DayNumber,
-                Title = value.Title,
-                Description = value.Description,
-                ImageUrl = value.ImageUrl
+                Title = value.Title ?? "",
+                Description = value.Description ?? "",
+                ImageUrl = value.ImageUrl ?? ""
             };
 
             var tours = await _tourService.GetAllTourAsync();
@@ -140,6 +140,32 @@ namespace ProjectTravelin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateTourProgram(UpdateTourProgramDto updateTourProgramDto)
         {
+            if (string.IsNullOrEmpty(updateTourProgramDto.TourProgramId))
+            {
+                return RedirectToAction("AdminTourProgramList", new { tourId = updateTourProgramDto.TourId });
+            }
+
+            if (string.IsNullOrEmpty(updateTourProgramDto.TourId))
+            {
+                var tours = await _tourService.GetAllTourAsync();
+
+                ViewBag.Tours = tours;
+                ViewBag.SelectedTourId = updateTourProgramDto.TourId;
+
+                ModelState.AddModelError("TourId", "Lütfen bir tur seçiniz.");
+
+                return View("~/Views/AdminTourProgram/UpdateTourProgram.cshtml", updateTourProgramDto);
+            }
+
+            if (updateTourProgramDto.DayNumber <= 0)
+            {
+                updateTourProgramDto.DayNumber = 1;
+            }
+
+            updateTourProgramDto.Title = updateTourProgramDto.Title ?? "";
+            updateTourProgramDto.Description = updateTourProgramDto.Description ?? "";
+            updateTourProgramDto.ImageUrl = updateTourProgramDto.ImageUrl ?? "";
+
             await _tourProgramService.UpdateTourProgramAsync(updateTourProgramDto);
 
             return RedirectToAction("AdminTourProgramList", new { tourId = updateTourProgramDto.TourId });

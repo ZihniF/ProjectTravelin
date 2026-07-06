@@ -1,0 +1,121 @@
+﻿@{
+    Layout = null;
+    var message = TempData["BookingSuccess"]?.ToString() ?? "Rezervasyon talebiniz başarıyla alındı.";
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="3;url=/Tour/TourList">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rezervasyon Alındı</title>
+
+    <link href="/travelin/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/travelin/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/travelin/css/plugin.css" rel="stylesheet" type="text/css">
+    <link href="/travelin/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <style>
+            body {
+                background: #f5f7fb;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .success-card {
+                background: #fff;
+                border-radius: 24px;
+                padding: 45px;
+                max-width: 560px;
+                width: 92%;
+                text-align: center;
+                box-shadow: 0 18px 45px rgba(15, 23, 42, .12);
+            }
+
+            .success-icon {
+                width: 82px;
+                height: 82px;
+                border-radius: 50%;
+                background: #ecfdf5;
+                color: #16a34a;
+                display: grid;
+                place-items: center;
+                font-size: 38px;
+                margin: 0 auto 22px;
+            }
+
+            .success-title {
+                font-size: 30px;
+                font-weight: 800;
+                color: #111827;
+                margin-bottom: 12px;
+            }
+
+            .success-message {
+                color: #64748b;
+                font-size: 16px;
+                line-height: 1.7;
+                margin-bottom: 25px;
+            }
+
+            .redirect-info {
+                background: #fff7f6;
+                border: 1px solid #ffe0dd;
+                color: #f56960;
+                border-radius: 14px;
+                padding: 13px 16px;
+                font-size: 14px;
+                font-weight: 800;
+                margin-bottom: 22px;
+            }
+
+            .btn-tour-list {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 9px;
+                background: #f56960;
+                color: #fff;
+                border-radius: 14px;
+                padding: 13px 24px;
+                font-weight: 800;
+                text-decoration: none;
+                transition: .2s;
+            }
+
+                .btn-tour-list:hover {
+                    background: #e45850;
+                    color: #fff;
+                    text-decoration: none;
+                }
+    </style>
+</head>
+
+<body>
+
+    <div class="success-card">
+        <div class="success-icon">
+            <i class="fa fa-check"></i>
+        </div>
+
+        <h1 class="success-title">Rezervasyon Alındı</h1>
+
+        <p class="success-message">
+            @message
+        </p>
+
+        <div class="redirect-info">
+            3 saniye içinde tur listesine yönlendiriliyorsunuz...
+        </div>
+
+        <a href="/Tour/TourList" class="btn-tour-list">
+            <i class="fa fa-map"></i>
+            Turlara Git
+        </a>
+    </div>
+
+</body>
+</html>
