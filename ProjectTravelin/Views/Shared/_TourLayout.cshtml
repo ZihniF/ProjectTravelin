@@ -1,5 +1,13 @@
 ﻿@{
     Layout = null;
+
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+    string IsActive(string controller)
+    {
+        return currentController == controller ? "active" : "";
+    }
 }
 
 <!DOCTYPE html>
@@ -8,9 +16,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] — Tur Admin</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+
     <style>
             :root {
                 --sidebar-w: 260px;
@@ -112,30 +122,31 @@
                 display: flex;
                 align-items: center;
                 gap: .75rem;
-                padding: .6rem .75rem;
+                padding: .7rem .75rem;
                 border-radius: 8px;
                 text-decoration: none;
                 color: var(--sidebar-text);
-                font-size: .875rem;
-                font-weight: 400;
+                font-size: .9rem;
+                font-weight: 500;
                 transition: all .15s;
-                margin-bottom: 2px;
+                margin-bottom: 4px;
             }
 
                 .nav-item-link i {
-                    font-size: 1rem;
+                    font-size: 1.05rem;
                     flex-shrink: 0;
                 }
 
                 .nav-item-link:hover {
                     background: #1a2332;
                     color: #cbd5e0;
+                    text-decoration: none;
                 }
 
                 .nav-item-link.active {
                     background: rgba(37,99,235,.15);
                     color: #60a5fa;
-                    font-weight: 500;
+                    font-weight: 700;
                 }
 
                 .nav-item-link .badge-dot {
@@ -145,21 +156,6 @@
                     background: var(--sidebar-accent);
                     margin-left: auto;
                 }
-
-            .sidebar-footer {
-                margin-top: auto;
-                padding: 1rem;
-                border-top: 1px solid var(--sidebar-border);
-            }
-
-                .sidebar-footer .nav-item-link {
-                    color: #e53e3e;
-                }
-
-                    .sidebar-footer .nav-item-link:hover {
-                        background: rgba(229,62,62,.1);
-                        color: #fc8181;
-                    }
 
             /* ── TOPBAR ──────────────────────────────── */
             .topbar {
@@ -199,83 +195,32 @@
                 flex: 1;
             }
 
-            .topbar-actions {
-                display: flex;
-                align-items: center;
-                gap: .75rem;
-            }
-
-            .topbar-icon-btn {
-                width: 36px;
-                height: 36px;
-                border-radius: 8px;
-                background: none;
-                border: 1px solid #e2e8f0;
-                display: grid;
-                place-items: center;
-                color: #4a5568;
-                cursor: pointer;
-                font-size: .95rem;
-                transition: all .15s;
-                position: relative;
-            }
-
-                .topbar-icon-btn:hover {
-                    background: #f7fafc;
-                    border-color: #cbd5e0;
-                }
-
-            .notif-dot {
-                position: absolute;
-                top: 5px;
-                right: 5px;
-                width: 7px;
-                height: 7px;
-                background: #e53e3e;
-                border-radius: 50%;
-                border: 1.5px solid #fff;
-            }
-
-            .admin-profile {
-                display: flex;
-                align-items: center;
-                gap: .6rem;
-                cursor: pointer;
-                padding: .35rem .6rem .35rem .35rem;
-                border-radius: 10px;
-                border: 1px solid #e2e8f0;
-                transition: all .15s;
-            }
-
-                .admin-profile:hover {
-                    background: #f7fafc;
-                }
-
-            .admin-avatar {
-                width: 32px;
-                height: 32px;
-                border-radius: 8px;
-                background: linear-gradient(135deg, #2563eb, #7c3aed);
-                display: grid;
-                place-items: center;
-                color: #fff;
-                font-weight: 700;
-                font-size: .8rem;
-                flex-shrink: 0;
-            }
-
-            .admin-name {
-                font-size: .82rem;
-                font-weight: 500;
-                color: #2d3748;
-                white-space: nowrap;
-            }
-
-            .admin-role {
-                font-size: .7rem;
+            .topbar-text {
                 color: #718096;
-                display: block;
+                font-size: .82rem;
+                font-weight: 600;
             }
+
+            .btn-site {
+                background: #f8fafc;
+                color: #2563eb;
+                border: 1px solid #e2e8f0;
+                border-radius: 9px;
+                padding: .5rem .8rem;
+                font-size: .82rem;
+                font-weight: 700;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: .45rem;
+                transition: .15s;
+            }
+
+                .btn-site:hover {
+                    background: #eff6ff;
+                    color: #1d4ed8;
+                    text-decoration: none;
+                }
 
             /* ── MAIN CONTENT ────────────────────────── */
             .main-wrapper {
@@ -321,18 +266,29 @@
                 .sidebar-overlay.show {
                     display: block;
                 }
+
+                .topbar-text {
+                    display: none;
+                }
             }
     </style>
+
     @await RenderSectionAsync("Styles", required: false)
 </head>
+
 <body>
 
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
-        <a href="#" class="sidebar-brand">
-            <div class="brand-icon"><i class="bi bi-compass"></i></div>
+        <a asp-controller="AdminTour"
+           asp-action="TourList"
+           class="sidebar-brand">
+            <div class="brand-icon">
+                <i class="bi bi-compass"></i>
+            </div>
+
             <div>
                 <div class="brand-name">TourAdmin</div>
                 <span class="brand-sub">Yönetim Paneli</span>
@@ -340,48 +296,54 @@
         </a>
 
         <div class="sidebar-section">
-            <div class="sidebar-section-label">Genel</div>
-            <a href="#" class="nav-item-link">
-                <i class="bi bi-grid-1x2"></i> Dashboard
-            </a>
-            <a href="#" class="nav-item-link active">
-                <i class="bi bi-map"></i> Turlar
-                <span class="badge-dot"></span>
-            </a>
-            <a href="#" class="nav-item-link">
-                <i class="bi bi-plus-circle"></i> Yeni Tur Ekle
-            </a>
-        </div>
+            <div class="sidebar-section-label">Yönetim Menüleri</div>
 
-        <div class="sidebar-section">
-            <div class="sidebar-section-label">İşlemler</div>
+            <a asp-controller="AdminTour"
+               asp-action="TourList"
+               class="nav-item-link @IsActive("AdminTour")">
+                <i class="bi bi-map"></i>
+                <span>Turlar</span>
+
+                @if (currentController == "AdminTour")
+                {
+                    <span class="badge-dot"></span>
+                }
+            </a>
+
+            <a asp-controller="AdminCategory"
+               asp-action="CategoryList"
+               class="nav-item-link @IsActive("AdminCategory")">
+                <i class="bi bi-grid"></i>
+                <span>Kategoriler</span>
+
+                @if (currentController == "AdminCategory")
+                {
+                    <span class="badge-dot"></span>
+                }
+            </a>
+
+            <a asp-controller="AdminReview"
+               asp-action="ReviewList"
+               class="nav-item-link @IsActive("AdminReview")">
+                <i class="bi bi-chat-square-text"></i>
+                <span>Yorumlar</span>
+
+                @if (currentController == "AdminReview")
+                {
+                    <span class="badge-dot"></span>
+                }
+            </a>
+
             <a asp-controller="AdminBooking"
                asp-action="BookingList"
-               class="menu-link">
+               class="nav-item-link @IsActive("AdminBooking")">
                 <i class="bi bi-calendar-check"></i>
                 <span>Rezervasyonlar</span>
-            </a>
-            <a href="#" class="nav-item-link">
-                <i class="bi bi-people"></i> Müşteriler
-            </a>
-            <a href="#" class="nav-item-link">
-                <i class="bi bi-bar-chart-line"></i> Raporlar
-            </a>
-            <a href="#" class="nav-item-link">
-                <i class="bi bi-star"></i> Yorumlar
-            </a>
-        </div>
 
-        <div class="sidebar-section">
-            <div class="sidebar-section-label">Sistem</div>
-            <a href="#" class="nav-item-link">
-                <i class="bi bi-gear"></i> Ayarlar
-            </a>
-        </div>
-
-        <div class="sidebar-footer">
-            <a href="#" class="nav-item-link">
-                <i class="bi bi-box-arrow-left"></i> Çıkış Yap
+                @if (currentController == "AdminBooking")
+                {
+                    <span class="badge-dot"></span>
+                }
             </a>
         </div>
     </aside>
@@ -391,33 +353,19 @@
         <button class="hamburger" onclick="toggleSidebar()" aria-label="Menüyü aç/kapat">
             <i class="bi bi-list"></i>
         </button>
+
         <span class="topbar-title">@ViewData["Title"]</span>
+
         <div class="topbar-spacer"></div>
-        <div class="topbar-actions">
-            <button class="topbar-icon-btn" aria-label="Bildirimler">
-                <i class="bi bi-bell"></i>
-                <span class="notif-dot"></span>
-            </button>
-            <button class="topbar-icon-btn" aria-label="Mesajlar">
-                <i class="bi bi-chat-dots"></i>
-            </button>
-            <div class="dropdown">
-                <div class="admin-profile" data-bs-toggle="dropdown" aria-expanded="false">
-                    <div class="admin-avatar">A</div>
-                    <div>
-                        <div class="admin-name">Admin Kullanıcı</div>
-                        <span class="admin-role">Süper Admin</span>
-                    </div>
-                    <i class="bi bi-chevron-down ms-1" style="font-size:.7rem;color:#718096"></i>
-                </div>
-                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-1">
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profilim</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Ayarlar</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-left me-2"></i>Çıkış Yap</a></li>
-                </ul>
-            </div>
-        </div>
+
+        <span class="topbar-text">Travelin Admin Paneli</span>
+
+        <a href="/"
+           class="btn-site"
+           target="_blank">
+            <i class="bi bi-box-arrow-up-right"></i>
+            Siteyi Gör
+        </a>
     </header>
 
     <!-- MAIN -->
@@ -426,12 +374,14 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         function toggleSidebar() {
         document.getElementById('sidebar').classList.toggle('open');
         document.getElementById('sidebarOverlay').classList.toggle('show');
         }
     </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

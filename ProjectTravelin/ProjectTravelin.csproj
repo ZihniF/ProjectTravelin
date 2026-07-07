@@ -55,9 +55,11 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="MongoDB.Bson" Version="3.9.0" />
     <PackageReference Include="MongoDB.Driver" Version="3.9.0" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.30.0" />
+    <PackageReference Include="QuestPDF" Version="2026.7.0" />
   </ItemGroup>
 
   <ItemGroup>

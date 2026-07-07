@@ -1,0 +1,197 @@
+﻿@model List<ProjectTravelin.Dtos.CategoryDtos.ResultCategoryDto>
+
+<section class="tour-category-area">
+    <div class="container">
+        <div class="category-title-box">
+            <div>
+                <span class="category-small-title">Tur Kategorileri</span>
+                <h2>İlgi Alanına Göre Turları Keşfet</h2>
+            </div>
+
+            <p>
+                Seyahat tarzına uygun kategorileri inceleyerek sana en uygun turu kolayca seçebilirsin.
+            </p>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="row">
+                @foreach (var item in Model)
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                        <a href="/Tour/TourList" class="tour-category-card">
+                            <div class="tour-category-icon">
+                                @if (!string.IsNullOrWhiteSpace(item.IconUrl))
+                                {
+                                    <i class="@item.IconUrl"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-map-signs"></i>
+                                }
+                            </div>
+
+                            <h4>@item.CategoryName</h4>
+
+                            <span class="category-detail-link">
+                                Turları Gör
+                                <i class="fa fa-angle-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="category-empty-box">
+                Henüz aktif kategori bulunmuyor.
+            </div>
+        }
+    </div>
+</section>
+
+<style>
+    .tour-category-area {
+        padding: 55px 0 35px;
+        background: #fff;
+    }
+
+    .category-title-box {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 25px;
+        margin-bottom: 35px;
+    }
+
+    .category-small-title {
+        color: #f56960;
+        font-size: 16px;
+        font-weight: 700;
+        display: inline-block;
+        margin-bottom: 8px;
+    }
+
+    .category-title-box h2 {
+        color: #17233e;
+        font-size: 34px;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .category-title-box p {
+        max-width: 430px;
+        color: #777;
+        font-size: 15px;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    /* Kart artık komple link */
+    .tour-category-card {
+        display: block;
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 28px 18px;
+        text-align: center;
+        border: 1px solid #eef2f7;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, .07);
+        transition: .25s;
+        height: 100%;
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+    }
+
+        .tour-category-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 42px rgba(15, 23, 42, .12);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .tour-category-card:focus {
+            text-decoration: none;
+            color: inherit;
+            outline: none;
+        }
+
+        .tour-category-card:focus-visible {
+            outline: 3px solid rgba(245, 105, 96, .25);
+            outline-offset: 4px;
+        }
+
+        .tour-category-card:visited {
+            color: inherit;
+        }
+
+    .tour-category-icon {
+        width: 72px;
+        height: 72px;
+        border-radius: 20px;
+        background: #fff7f6;
+        color: #f56960;
+        display: grid;
+        place-items: center;
+        margin: 0 auto 18px;
+        font-size: 32px;
+        transition: .25s;
+    }
+
+    .tour-category-card:hover .tour-category-icon {
+        background: #f56960;
+        color: #fff;
+        transform: scale(1.05);
+    }
+
+    .tour-category-card h4 {
+        color: #17233e;
+        font-size: 18px;
+        font-weight: 800;
+        margin-bottom: 12px;
+        text-decoration: none;
+    }
+
+    .category-detail-link {
+        color: #f56960;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 14px;
+        transition: .2s;
+    }
+
+    .tour-category-card:hover .category-detail-link {
+        color: #e45850;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .category-empty-box {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 25px;
+        text-align: center;
+        color: #777;
+        font-weight: 600;
+    }
+
+    @@media(max-width: 991px) {
+        .category-title-box {
+            display: block;
+            text-align: center;
+        }
+
+            .category-title-box p {
+                margin: 15px auto 0;
+            }
+
+            .category-title-box h2 {
+                font-size: 28px;
+            }
+    }
+</style>

@@ -4,11 +4,11 @@ using ProjectTravelin.Services.CategoryServices;
 
 namespace ProjectTravelin.Controllers
 {
-    public class CategoryController : Controller
+    public class AdminCategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService categoryService)
+        public AdminCategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
         }

@@ -283,12 +283,30 @@
         </div>
     </div>
 
-    <a asp-controller="AdminTour"
-       asp-action="TourList"
-       class="btn-back">
-        <i class="bi bi-arrow-left"></i>
-        Tur Listesine Dön
-    </a>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+        <a asp-controller="AdminBooking"
+           asp-action="ExportTourBookingsToExcel"
+           asp-route-tourId="@selectedTourId"
+           class="btn-back">
+            <i class="bi bi-file-earmark-excel"></i>
+            Excel'e Aktar
+        </a>
+
+        <a asp-controller="AdminBooking"
+           asp-action="ExportTourBookingsToPdf"
+           asp-route-tourId="@selectedTourId"
+           class="btn-back">
+            <i class="bi bi-file-earmark-pdf"></i>
+            PDF'e Aktar
+        </a>
+
+        <a asp-controller="AdminTour"
+           asp-action="TourList"
+           class="btn-back">
+            <i class="bi bi-arrow-left"></i>
+            Tur Listesine Dön
+        </a>
+    </div>
 </div>
 
 @if (TempData["BookingStatusMessage"] != null)

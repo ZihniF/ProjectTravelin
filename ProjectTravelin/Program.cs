@@ -7,8 +7,11 @@ using ProjectTravelin.Services.BookingServices;
 using ProjectTravelin.Services.EmailServices;
 using ProjectTravelin.Settings;
 using System.Reflection;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 builder.Services.AddScoped<ITourService, TourService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
