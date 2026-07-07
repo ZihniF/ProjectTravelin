@@ -564,6 +564,19 @@
                                        aria-label="@item.Title turunu düzenle"
                                        title="Düzenle">
                                         <i class="bi bi-pencil"></i>
+                                    </a>                                    
+                                    <a asp-controller="AdminTourProgram" asp-action="AdminTourProgramList" asp-route-tourId="@item.TourId"
+                                       class="btn-action btn-detail"
+                                       aria-label="@item.Title tur programları"
+                                       title="Tur Programları">
+                                        <i class="bi bi-calendar-week"></i>
+                                    </a>
+                                    <a asp-controller="AdminBooking"
+                                       asp-action="TourBookingList"
+                                       asp-route-tourId="@item.TourId"
+                                       class="btn-action btn-detail"
+                                       title="Kayıtlı Müşteriler">
+                                        <i class="bi bi-people"></i>
                                     </a>
                                     <button type="button"
                                             class="btn-action btn-delete"
@@ -572,12 +585,6 @@
                                             onclick="confirmDelete('@item.TourId', '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(item.Title))')">
                                         <i class="bi bi-trash3"></i>
                                     </button>
-                                    <a asp-controller="AdminTourProgram" asp-action="AdminTourProgramList" asp-route-tourId="@item.TourId"
-                                       class="btn-action btn-detail"
-                                       aria-label="@item.Title tur programları"
-                                       title="Tur Programları">
-                                        <i class="bi bi-calendar-week"></i>
-                                    </a>
                                 </div>
                             </td>
                         </tr>

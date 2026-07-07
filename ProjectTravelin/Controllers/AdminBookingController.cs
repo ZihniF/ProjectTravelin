@@ -38,11 +38,44 @@ namespace ProjectTravelin.Controllers
 
             return View("~/Views/AdminBooking/BookingList.cshtml", values);
         }
+        public async Task<IActionResult> TourBookingList(string tourId)
+        {
+            if (string.IsNullOrEmpty(tourId))
+            {
+                return RedirectToAction("BookingList");
+            }
 
-        public async Task<IActionResult> ApprovedBooking(string id)
+            var values = await _bookingService.GetBookingsByTourIdAsync(tourId);
+            var tour = await _tourService.GetTourByIdAsync(tourId);
+
+            ViewBag.SelectedTourId = tourId;
+
+            if (tour != null)
+            {
+                ViewBag.SelectedTourName = $"{tour.Title} - {tour.City} / {tour.Country}";
+            }
+            else
+            {
+                ViewBag.SelectedTourName = "Tur bilgisi bulunamadı";
+            }
+
+            ViewBag.TotalBookingCount = values.Count;
+            ViewBag.PendingBookingCount = values.Count(x => x.Status == "Beklemede");
+            ViewBag.ApprovedBookingCount = values.Count(x => x.Status == "Onaylandı");
+            ViewBag.CancelledBookingCount = values.Count(x => x.Status == "İptal Edildi");
+
+            return View("~/Views/AdminBooking/TourBookingList.cshtml", values);
+        }
+
+        public async Task<IActionResult> ApprovedBooking(string id, string tourId)
         {
             if (string.IsNullOrEmpty(id))
             {
+                if (!string.IsNullOrEmpty(tourId))
+                {
+                    return RedirectToAction("TourBookingList", new { tourId = tourId });
+                }
+
                 return RedirectToAction("BookingList");
             }
 
@@ -52,6 +85,11 @@ namespace ProjectTravelin.Controllers
             {
                 TempData["BookingStatusMessage"] = "Rezervasyon bulunamadı.";
                 TempData["BookingStatusType"] = "error";
+
+                if (!string.IsNullOrEmpty(tourId))
+                {
+                    return RedirectToAction("TourBookingList", new { tourId = tourId });
+                }
 
                 return RedirectToAction("BookingList");
             }
@@ -88,14 +126,19 @@ namespace ProjectTravelin.Controllers
             }
             catch
             {
-                TempData["BookingStatusMessage"] = "Rezervasyon onaylandı fakat e-posta gönderilirken bir hata oluştu. SMTP ayarlarını kontrol edin.";
+                TempData["BookingStatusMessage"] = "Rezervasyon onaylandı fakat e-posta gönderilirken bir hata oluştu.";
                 TempData["BookingStatusType"] = "warning";
+            }
+
+            if (!string.IsNullOrEmpty(tourId))
+            {
+                return RedirectToAction("TourBookingList", new { tourId = tourId });
             }
 
             return RedirectToAction("BookingList");
         }
 
-        public async Task<IActionResult> PendingBooking(string id)
+        public async Task<IActionResult> PendingBooking(string id, string tourId)
         {
             if (!string.IsNullOrEmpty(id))
             {
@@ -105,10 +148,15 @@ namespace ProjectTravelin.Controllers
                 TempData["BookingStatusType"] = "warning";
             }
 
+            if (!string.IsNullOrEmpty(tourId))
+            {
+                return RedirectToAction("TourBookingList", new { tourId = tourId });
+            }
+
             return RedirectToAction("BookingList");
         }
 
-        public async Task<IActionResult> CancelBooking(string id)
+        public async Task<IActionResult> CancelBooking(string id, string tourId)
         {
             if (!string.IsNullOrEmpty(id))
             {
@@ -118,10 +166,15 @@ namespace ProjectTravelin.Controllers
                 TempData["BookingStatusType"] = "error";
             }
 
+            if (!string.IsNullOrEmpty(tourId))
+            {
+                return RedirectToAction("TourBookingList", new { tourId = tourId });
+            }
+
             return RedirectToAction("BookingList");
         }
 
-        public async Task<IActionResult> DeleteBooking(string id)
+        public async Task<IActionResult> DeleteBooking(string id, string tourId)
         {
             if (!string.IsNullOrEmpty(id))
             {
@@ -129,6 +182,11 @@ namespace ProjectTravelin.Controllers
 
                 TempData["BookingStatusMessage"] = "Rezervasyon silindi.";
                 TempData["BookingStatusType"] = "error";
+            }
+
+            if (!string.IsNullOrEmpty(tourId))
+            {
+                return RedirectToAction("TourBookingList", new { tourId = tourId });
             }
 
             return RedirectToAction("BookingList");
