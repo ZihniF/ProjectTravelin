@@ -2,6 +2,9 @@
 
 @{
     var selectedCategoryId = ViewBag.SelectedCategoryId as string;
+
+    var categoryNames = ViewBag.CategoryNames as Dictionary<string, string>
+        ?? new Dictionary<string, string>();
 }
 
 <section class="trending pt-6 pb-0 bg-lgrey">
@@ -57,7 +60,20 @@
 
                             <div class="col-lg-5 col-md-6">
                                 <div class="trend-content position-relative text-md-start text-center">
-                                    <small>@item.DayNight</small>
+                                    @{
+                                        var categoryName = !string.IsNullOrWhiteSpace(item.CategoryId) && categoryNames.ContainsKey(item.CategoryId)
+                                            ? categoryNames[item.CategoryId]
+                                            : "Kategori Yok";
+                                    }
+
+                                    <div class="tour-card-meta">
+                                        <span class="tour-category-badge">
+                                            <i class="fa fa-tag"></i>
+                                            @categoryName
+                                        </span>
+
+                                        <small>@item.DayNight</small>
+                                    </div>
 
                                     <h3 class="mb-1">
                                         <a href="/Tour/TourDetail/@item.TourId">@item.Title</a>
@@ -165,3 +181,30 @@
         </div>
     </div>
 </section>
+<style>
+    .tour-card-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+    }
+
+    .tour-category-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #fff7f6;
+        color: #f56960;
+        border: 1px solid #ffd7d3;
+        border-radius: 999px;
+        padding: 5px 11px;
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+        .tour-category-badge i {
+            font-size: 11px;
+        }
+</style>

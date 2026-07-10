@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjectTravelin.Dtos.TourDtos;
+using ProjectTravelin.Services.CategoryServices;
 using ProjectTravelin.Services.TourServices;
 
 namespace ProjectTravelin.ViewComponents
@@ -8,10 +9,14 @@ namespace ProjectTravelin.ViewComponents
     public class _TourListComponentPartial : ViewComponent
     {
         private readonly ITourService _tourService;
+        private readonly ICategoryService _categoryService;
 
-        public _TourListComponentPartial(ITourService tourService)
+        public _TourListComponentPartial(
+            ITourService tourService,
+            ICategoryService categoryService)
         {
             _tourService = tourService;
+            _categoryService = categoryService;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(int page = 1, string categoryId = "")
@@ -35,6 +40,13 @@ namespace ProjectTravelin.ViewComponents
             }
 
             values = values ?? new List<ResultTourDto>();
+
+            var categories = await _categoryService.GetAllCategoryAsync();
+
+            ViewBag.CategoryNames = categories.ToDictionary(
+                x => x.CategoryId,
+                x => x.CategoryName
+            );
 
             int totalCount = values.Count;
             int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);

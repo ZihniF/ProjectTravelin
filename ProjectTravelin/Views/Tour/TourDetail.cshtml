@@ -3,6 +3,7 @@
 @{
     Layout = null;
     var youtubeEmbedUrl = GetYoutubeEmbedUrl(Model.YoutubeVideoUrl);
+    var categoryName = ViewBag.CategoryName?.ToString() ?? "Kategori Yok";
 }
 
 @functions {
@@ -85,6 +86,24 @@
         font-size: 13px;
         font-weight: 600;
     }
+
+    .tour-detail-category {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: #fff7f6;
+        color: #f56960;
+        border: 1px solid #ffd7d3;
+        border-radius: 999px;
+        padding: 7px 14px;
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+
+        .tour-detail-category i {
+            font-size: 12px;
+        }
 
     .video-popup-overlay {
         position: fixed;
@@ -183,6 +202,11 @@
                     <div class="tour-content p-4">
                         <h2 class="mb-2">@Model.Title</h2>
 
+                        <span class="tour-detail-category">
+                            <i class="fa fa-tag"></i>
+                            @categoryName
+                        </span>
+
                         <h5 class="theme mb-3">
                             <i class="icon-location-pin"></i>
                             @Model.City, @Model.Country
@@ -262,17 +286,25 @@
 
                         <ul class="list-unstyled">
                             <li class="mb-2">
+                                <strong>Kategori:</strong> @categoryName
+                            </li>
+
+                            <li class="mb-2">
                                 <strong>Ülke:</strong> @Model.Country
                             </li>
+
                             <li class="mb-2">
                                 <strong>Şehir:</strong> @Model.City
                             </li>
+
                             <li class="mb-2">
                                 <strong>Tarih:</strong> @Model.TourDate.ToString("dd.MM.yyyy")
                             </li>
+
                             <li class="mb-2">
                                 <strong>Süre:</strong> @Model.DayNight
                             </li>
+
                             <li class="mb-2">
                                 <strong>Kapasite:</strong> @Model.Capacity kişi
                             </li>
@@ -293,6 +325,7 @@
                            class="nir-btn w-100 text-center mt-3">
                             Rezervasyon Yap
                         </a>
+
                         <a href="/Comment/CommentListByTourId/@Model.TourId" class="nir-btn w-100 text-center mt-3">
                             Değerlendirmeleri Gör
                         </a>

@@ -19,6 +19,13 @@ namespace ProjectTravelin.Controllers
         public async Task<IActionResult> TourList()
         {
             var values = await _tourService.GetAllTourAsync();
+            var categories = await _categoryService.GetAllCategoryAsync();
+
+            ViewBag.CategoryNames = categories.ToDictionary(
+                x => x.CategoryId,
+                x => x.CategoryName
+            );
+
             return View(values);
         }
         [HttpGet]

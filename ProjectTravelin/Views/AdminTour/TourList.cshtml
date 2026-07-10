@@ -7,6 +7,8 @@
     string country = Context.Request.Query["country"];
     string fromDate = Context.Request.Query["fromDate"];
     string toDate = Context.Request.Query["toDate"];
+    var categoryNames = ViewBag.CategoryNames as Dictionary<string, string>
+        ?? new Dictionary<string, string>();
 }
 
 @section Styles {
@@ -93,6 +95,24 @@
             padding: .2rem .6rem;
             border-radius: 20px;
         }
+
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff7f6;
+            color: #f56960;
+            border: 1px solid #ffd7d3;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: .75rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+            .category-badge i {
+                font-size: .8rem;
+            }
 
         /* TABLE */
         .tours-table {
@@ -513,6 +533,7 @@
                     <tr>
                         <th>Görsel</th>
                         <th>Tur Başlığı</th>
+                        <th>Kategori</th>
                         <th>Ülke</th>
                         <th>Şehir</th>
                         <th>Tarih</th>
@@ -538,6 +559,18 @@
                             </td>
                             <td data-label="Başlık">
                                 <span class="tour-title" title="@item.Title">@item.Title</span>
+                            </td>
+                            <td>
+                                @{
+                                    var categoryName = !string.IsNullOrWhiteSpace(item.CategoryId) && categoryNames.ContainsKey(item.CategoryId)
+                                        ? categoryNames[item.CategoryId]
+                                        : "Kategori Yok";
+                                }
+
+                                <span class="category-badge">
+                                    <i class="bi bi-tag"></i>
+                                    @categoryName
+                                </span>
                             </td>
                             <td data-label="Ülke">
                                 <span class="loc-badge"><i class="bi bi-globe2"></i>@item.Country</span>
@@ -646,4 +679,5 @@
             new bootstrap.Modal(document.getElementById('deleteModal')).show();
         }
     </script>
+
 }

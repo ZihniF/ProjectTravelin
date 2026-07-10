@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjectTravelin.Dtos.TourDtos;
+using ProjectTravelin.Services.CategoryServices;
 using ProjectTravelin.Services.TourServices;
 
 namespace ProjectTravelin.Controllers
@@ -7,10 +8,14 @@ namespace ProjectTravelin.Controllers
     public class TourController : Controller
     {
         private readonly ITourService _tourService;
+        private readonly ICategoryService _categoryService;
 
-        public TourController(ITourService tourService)
+        public TourController(
+            ITourService tourService,
+            ICategoryService categoryService)
         {
             _tourService = tourService;
+            _categoryService = categoryService;
         }
 
         public IActionResult CreateTour()
@@ -50,6 +55,20 @@ namespace ProjectTravelin.Controllers
             if (value == null)
             {
                 return NotFound();
+            }
+
+            ViewBag.CategoryName = "Kategori Yok";
+
+            if (!string.IsNullOrWhiteSpace(value.CategoryId))
+            {
+                var categories = await _categoryService.GetAllCategoryAsync();
+
+                var category = categories.FirstOrDefault(x => x.CategoryId == value.CategoryId);
+
+                if (category != null)
+                {
+                    ViewBag.CategoryName = category.CategoryName;
+                }
             }
 
             return View(value);
