@@ -1,0 +1,422 @@
+﻿@model List<ProjectTravelin.Dtos.CommentDtos.ResultCommentDto>
+
+@{
+    ViewData["Title"] = "Yorum Listesi";
+    Layout = "~/Views/Shared/_TourLayout.cshtml";
+
+    var tours = ViewBag.Tours as Dictionary<string, string>
+        ?? new Dictionary<string, string>();
+
+    int totalCommentCount = ViewBag.TotalCommentCount ?? 0;
+    int approvedCommentCount = ViewBag.ApprovedCommentCount ?? 0;
+    int pendingCommentCount = ViewBag.PendingCommentCount ?? 0;
+}
+
+@section Styles {
+    <style>
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1a202c;
+            letter-spacing: -.03em;
+            line-height: 1.1;
+        }
+
+        .page-subtitle {
+            color: #718096;
+            font-size: .875rem;
+            margin-top: .4rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 1.1rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,.04);
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: .78rem;
+            font-weight: 700;
+            margin-bottom: .45rem;
+        }
+
+        .stat-value {
+            color: #1a202c;
+            font-size: 1.45rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .table-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,.05);
+        }
+
+        .table-header {
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid #edf2f7;
+            background: #fafbfc;
+        }
+
+        .table-title {
+            font-family: var(--font-display);
+            font-weight: 800;
+            color: #1a202c;
+            font-size: .98rem;
+        }
+
+        .table-subtitle {
+            color: #a0aec0;
+            font-size: .76rem;
+            margin-top: .15rem;
+        }
+
+        .comment-table {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+            .comment-table thead th {
+                background: #fff;
+                color: #718096;
+                font-size: .72rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: .05em;
+                border-bottom: 1px solid #edf2f7;
+                padding: .9rem 1rem;
+                white-space: nowrap;
+            }
+
+            .comment-table tbody td {
+                vertical-align: middle;
+                border-bottom: 1px solid #f1f5f9;
+                padding: 1rem;
+                color: #4a5568;
+                font-size: .84rem;
+            }
+
+            .comment-table tbody tr:hover {
+                background: #fafbfc;
+            }
+
+        .comment-title {
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: .3rem;
+        }
+
+        .comment-detail {
+            max-width: 360px;
+            color: #718096;
+            line-height: 1.5;
+            font-size: .8rem;
+        }
+
+        .tour-name {
+            max-width: 260px;
+            font-weight: 700;
+            color: #2d3748;
+            line-height: 1.4;
+        }
+
+        .score-stars {
+            color: #f59e0b;
+            white-space: nowrap;
+            font-size: .85rem;
+        }
+
+        .score-number {
+            color: #718096;
+            font-size: .75rem;
+            font-weight: 700;
+            margin-top: .25rem;
+        }
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            border-radius: 999px;
+            padding: .38rem .7rem;
+            font-size: .72rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .badge-approved {
+            background: #ecfdf5;
+            color: #15803d;
+        }
+
+        .badge-pending {
+            background: #fffbeb;
+            color: #b45309;
+        }
+
+        .btn-action {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            display: inline-grid;
+            place-items: center;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #4a5568;
+            text-decoration: none;
+            transition: .15s;
+            margin-right: .25rem;
+            font-size: .85rem;
+        }
+
+            .btn-action:hover {
+                text-decoration: none;
+                transform: translateY(-1px);
+            }
+
+        .btn-approve:hover {
+            background: #ecfdf5;
+            border-color: #bbf7d0;
+            color: #15803d;
+        }
+
+        .btn-passive:hover {
+            background: #fffbeb;
+            border-color: #fde68a;
+            color: #b45309;
+        }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+
+        .empty-state {
+            padding: 3rem 1rem;
+            text-align: center;
+            color: #718096;
+        }
+
+        .empty-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            background: #f8fafc;
+            color: #a0aec0;
+            margin: 0 auto 1rem;
+            font-size: 1.8rem;
+        }
+
+        @@media(max-width: 991px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+            }
+        }
+    </style>
+}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Yorum Listesi</h1>
+        <div class="page-subtitle">
+            Kullanıcılardan gelen tur yorumlarını buradan onaylayabilir veya pasife alabilirsiniz.
+        </div>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">Toplam Yorum</div>
+        <div class="stat-value">@totalCommentCount</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Onaylı Yorum</div>
+        <div class="stat-value">@approvedCommentCount</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Onay Bekleyen / Pasif</div>
+        <div class="stat-value">@pendingCommentCount</div>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-header">
+        <div class="table-title">Tur Yorumları</div>
+        <div class="table-subtitle">
+            Onaylı yorumlar kullanıcı tarafında görüntülenir. Pasif yorumlar kullanıcıya gösterilmez.
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="comment-table">
+                <thead>
+                    <tr>
+                        <th>Yorum</th>
+                        <th>Tur</th>
+                        <th>Puan</th>
+                        <th>Tarih</th>
+                        <th>Durum</th>
+                        <th style="width:170px;">İşlemler</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var tourName = !string.IsNullOrWhiteSpace(item.TourId) && tours.ContainsKey(item.TourId)
+                            ? tours[item.TourId]
+                            : "Tur bilgisi bulunamadı";
+
+                        <tr>
+                            <td>
+                                <div class="comment-title">@item.Headline</div>
+
+                                <div class="comment-detail">
+                                    @item.CommentDetail
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="tour-name">
+                                    @tourName
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="score-stars">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= item.Score)
+                                        {
+                                            <i class="bi bi-star-fill"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-star"></i>
+                                        }
+                                    }
+                                </div>
+
+                                <div class="score-number">
+                                    @item.Score / 5
+                                </div>
+                            </td>
+
+                            <td>
+                                @item.CommentDate.ToString("dd.MM.yyyy HH:mm")
+                            </td>
+
+                            <td>
+                                @if (item.IsStatus)
+                                {
+                                    <span class="badge-status badge-approved">
+                                        <i class="bi bi-check-circle"></i>
+                                        Onaylı
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge-status badge-pending">
+                                        <i class="bi bi-hourglass-split"></i>
+                                        Pasif
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+                                @if (!item.IsStatus)
+                                {
+                                    <a asp-controller="AdminComment"
+                                       asp-action="ApproveComment"
+                                       asp-route-id="@item.CommentId"
+                                       class="btn-action btn-approve"
+                                       title="Onayla">
+                                        <i class="bi bi-check-lg"></i>
+                                    </a>
+                                }
+
+                                @if (item.IsStatus)
+                                {
+                                    <a asp-controller="AdminComment"
+                                       asp-action="PassiveComment"
+                                       asp-route-id="@item.CommentId"
+                                       class="btn-action btn-passive"
+                                       title="Pasife Al">
+                                        <i class="bi bi-eye-slash"></i>
+                                    </a>
+                                }
+
+                                <a asp-controller="AdminComment"
+                                   asp-action="DeleteComment"
+                                   asp-route-id="@item.CommentId"
+                                   class="btn-action btn-delete js-delete-comment"
+                                   title="Sil">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="bi bi-chat-square-text"></i>
+            </div>
+
+            <h5>Henüz yorum bulunmuyor</h5>
+            <p>Kullanıcılar turlara yorum yaptığında burada listelenecek.</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.js-delete-comment').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                const confirmed = confirm('Bu yorumu silmek istediğinize emin misiniz?');
+
+                if (!confirmed) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

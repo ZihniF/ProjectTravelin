@@ -10,17 +10,36 @@ namespace ProjectTravelin.Controllers
         private readonly ICommentService _commentService;
         private readonly ITourService _tourService;
 
-        public CommentController(ICommentService commentService, ITourService tourService)
+        public CommentController(
+            ICommentService commentService,
+            ITourService tourService)
         {
             _commentService = commentService;
             _tourService = tourService;
         }
 
-        public IActionResult CreateComment(string tourId)
+        public async Task<IActionResult> CreateComment(string tourId)
         {
+            if (string.IsNullOrEmpty(tourId))
+            {
+                return RedirectToAction("TourList", "Tour");
+            }
+
+            var tour = await _tourService.GetTourByIdAsync(tourId);
+
+            if (tour == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.TourName = tour.Title;
+
             var model = new CreateCommentDto
             {
-                TourId = tourId
+                TourId = tourId,
+                Headline = "",
+                CommentDetail = "",
+                Score = 5
             };
 
             return View(model);
@@ -35,26 +54,54 @@ namespace ProjectTravelin.Controllers
                 return RedirectToAction("TourList", "Tour");
             }
 
-            createCommentDto.CommentDate = DateTime.Now;
+            if (string.IsNullOrWhiteSpace(createCommentDto.Headline))
+            {
+                ModelState.AddModelError("Headline", "Yorum başlığı boş bırakılamaz.");
+            }
 
-            // Kullanıcı yorumu direkt listede görünsün diye true yaptık.
-            // Admin onayı istersen bunu false yaparız.
-            createCommentDto.IsStatus = true;
+            if (string.IsNullOrWhiteSpace(createCommentDto.CommentDetail))
+            {
+                ModelState.AddModelError("CommentDetail", "Yorum detayı boş bırakılamaz.");
+            }
+
+            if (createCommentDto.Score < 1 || createCommentDto.Score > 5)
+            {
+                ModelState.AddModelError("Score", "Puan 1 ile 5 arasında olmalıdır.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var tour = await _tourService.GetTourByIdAsync(createCommentDto.TourId);
+                ViewBag.TourName = tour != null ? tour.Title : "Tur Yorumu";
+
+                return View(createCommentDto);
+            }
 
             await _commentService.CreateCommentAsync(createCommentDto);
 
-            TempData["CommentSuccess"] = "Yorumunuz başarıyla gönderildi.";
+            TempData["CommentSuccess"] = "Yorumunuz başarıyla gönderildi. Admin onayından sonra yayınlanacaktır.";
 
             return RedirectToAction("CommentListByTourId", "Comment", new { id = createCommentDto.TourId });
         }
 
         public async Task<IActionResult> CommentListByTourId(string id)
         {
-            var values = await _commentService.GetCommentsByTourId(id);
+            if (string.IsNullOrEmpty(id))
+            {
+                return RedirectToAction("TourList", "Tour");
+            }
+
             var tour = await _tourService.GetTourByIdAsync(id);
 
+            if (tour == null)
+            {
+                return NotFound();
+            }
+
+            var values = await _commentService.GetApprovedCommentsByTourIdAsync(id);
+
             ViewBag.TourId = id;
-            ViewBag.TourName = tour != null ? tour.Title : "Tur Yorumları";
+            ViewBag.TourName = tour.Title;
 
             return View(values);
         }

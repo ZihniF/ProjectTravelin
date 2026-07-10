@@ -10,18 +10,75 @@ namespace ProjectTravelin.Services.CommentServices
     {
         private readonly IMapper _mapper;
         private readonly IMongoCollection<Comment> _commentCollection;
-        public CommentService(IMapper mapper,IDatabaseSettings _databaseSettings)
+
+        public CommentService(IMapper mapper, IDatabaseSettings databaseSettings)
         {
-            var client = new MongoClient(_databaseSettings.ConnectionString);
-            var database = client.GetDatabase(_databaseSettings.DatabaseName);
-            _commentCollection = database.GetCollection<Comment>(_databaseSettings.CommentCollectionName);
+            var client = new MongoClient(databaseSettings.ConnectionString);
+            var database = client.GetDatabase(databaseSettings.DatabaseName);
+
+            _commentCollection = database.GetCollection<Comment>(
+                databaseSettings.CommentCollectionName
+            );
+
             _mapper = mapper;
+        }
+
+        public async Task<List<ResultCommentDto>> GetAllCommentAsync()
+        {
+            var values = await _commentCollection
+                .Find(x => true)
+                .SortByDescending(x => x.CommentDate)
+                .ToListAsync();
+
+            return _mapper.Map<List<ResultCommentDto>>(values);
+        }
+
+        public async Task<List<ResultCommentDto>> GetCommentsByTourIdAsync(string tourId)
+        {
+            var values = await _commentCollection
+                .Find(x => x.TourId == tourId)
+                .SortByDescending(x => x.CommentDate)
+                .ToListAsync();
+
+            return _mapper.Map<List<ResultCommentDto>>(values);
+        }
+
+        public async Task<List<ResultCommentDto>> GetApprovedCommentsByTourIdAsync(string tourId)
+        {
+            var values = await _commentCollection
+                .Find(x => x.TourId == tourId && x.IsStatus == true)
+                .SortByDescending(x => x.CommentDate)
+                .ToListAsync();
+
+            return _mapper.Map<List<ResultCommentDto>>(values);
         }
 
         public async Task CreateCommentAsync(CreateCommentDto createCommentDto)
         {
-            var values =_mapper.Map<Comment>(createCommentDto);
-            await _commentCollection.InsertOneAsync(values);
+            var value = _mapper.Map<Comment>(createCommentDto);
+
+            value.Headline = value.Headline ?? "";
+            value.CommentDetail = value.CommentDetail ?? "";
+            value.TourId = value.TourId ?? "";
+
+            if (value.CommentDate == default)
+            {
+                value.CommentDate = DateTime.Now;
+            }
+
+            if (value.Score < 1)
+            {
+                value.Score = 1;
+            }
+
+            if (value.Score > 5)
+            {
+                value.Score = 5;
+            }
+
+            value.IsStatus = false;
+
+            await _commentCollection.InsertOneAsync(value);
         }
 
         public async Task DeleteCommentAsync(string id)
@@ -29,29 +86,23 @@ namespace ProjectTravelin.Services.CommentServices
             await _commentCollection.DeleteOneAsync(x => x.CommentId == id);
         }
 
-        public async Task<List<ResultCommentDto>> GetAllCommentAsync()
+        public async Task ChangeCommentStatusAsync(string id, bool status)
         {
-            var values=await _commentCollection.Find(x => true).ToListAsync();
-            return _mapper.Map<List<ResultCommentDto>>(values);
+            var filter = Builders<Comment>.Filter.Eq(x => x.CommentId, id);
 
+            var update = Builders<Comment>.Update
+                .Set(x => x.IsStatus, status);
+
+            await _commentCollection.UpdateOneAsync(filter, update);
         }
 
         public async Task<GetCommentByIdDto> GetCommentByIdAsync(string id)
         {
-            var value=await _commentCollection.Find(x => x.CommentId == id).FirstOrDefaultAsync();
+            var value = await _commentCollection
+                .Find(x => x.CommentId == id)
+                .FirstOrDefaultAsync();
+
             return _mapper.Map<GetCommentByIdDto>(value);
-        }
-
-        public async Task<List<ResultCommentListByTourIdDto>> GetCommentsByTourId(string id)
-        {
-            var values = await _commentCollection.Find(x => x.TourId == id).ToListAsync();
-            return _mapper.Map<List<ResultCommentListByTourIdDto>>(values);
-        }
-
-        public async Task UpdateCommentAsync(UpdateCommentDto updateCommentDto)
-        {
-            var values = _mapper.Map<Comment>(updateCommentDto);
-            await _commentCollection.FindOneAndReplaceAsync(x => x.CommentId == updateCommentDto.CommentId, values);
         }
     }
 }

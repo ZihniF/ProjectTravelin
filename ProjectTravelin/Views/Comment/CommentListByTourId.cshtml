@@ -1,18 +1,27 @@
-﻿@model List<ResultCommentListByTourIdDto>
+﻿@using ProjectTravelin.Dtos.CommentDtos
+@model List<ResultCommentDto>
+
 @{
-    Layout=null;
-}
-@{
+    Layout = null;
+
     ViewData["Title"] = "Tur Yorumları";
+
     var tourName = ViewBag.TourName ?? "Tur Adı";
     var tourId = ViewBag.TourId ?? "";
 
-    var approvedComments = Model?.Where(c => c.IsStatus).ToList() ?? new List<ResultCommentListByTourIdDto>();
+    var approvedComments = Model?.Where(c => c.IsStatus).ToList() ?? new List<ResultCommentDto>();
     var totalCount = approvedComments.Count;
     var avgScore = totalCount > 0 ? approvedComments.Average(c => c.Score) : 0;
 
     int[] distrib = new int[6];
-    foreach (var c in approvedComments) if (c.Score >= 1 && c.Score <= 5) distrib[c.Score]++;
+
+    foreach (var c in approvedComments)
+    {
+        if (c.Score >= 1 && c.Score <= 5)
+        {
+            distrib[c.Score]++;
+        }
+    }
 }
 
 <!DOCTYPE html>
@@ -610,9 +619,9 @@
         <div class="hero-pattern"></div>
         <div class="container hero-content">
             <nav class="breadcrumb-nav">
-                <a href="/"><i class="fas fa-home"></i></a>
+                <a href="/Tour/TourList"><i class="fas fa-home"></i></a>
                 <i class="fas fa-chevron-right" style="font-size:10px;"></i>
-                <a href="/Tour">Turlar</a>
+                <a href="/Tour/TourList">Turlar</a>
                 <i class="fas fa-chevron-right" style="font-size:10px;"></i>
                 <span>@tourName</span>
             </nav>
