@@ -11,6 +11,7 @@ namespace ProjectTravelin.Services.TourServices
         Task<GetTourByIdDto> GetTourByIdAsync(string id);
         Task<List<ResultTourDto>> GetToursByPageAsync(int page, int pageSize);
         Task<long> GetTourCountAsync();
+        Task<List<ResultTourDto>> GetToursByCategoryIdAsync(string categoryId);
 
     }
 }

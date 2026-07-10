@@ -1,0 +1,428 @@
+﻿@model List<ProjectTravelin.Dtos.CategoryDtos.ResultCategoryDto>
+
+@{
+    ViewData["Title"] = "Kategori Listesi";
+    Layout = "~/Views/Shared/_TourLayout.cshtml";
+
+    int totalCategoryCount = ViewBag.TotalCategoryCount ?? 0;
+    int activeCategoryCount = ViewBag.ActiveCategoryCount ?? 0;
+    int passiveCategoryCount = ViewBag.PassiveCategoryCount ?? 0;
+}
+
+@section Styles {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+    <style>
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1a202c;
+            letter-spacing: -.03em;
+            line-height: 1.1;
+        }
+
+        .page-subtitle {
+            color: #718096;
+            font-size: .875rem;
+            margin-top: .4rem;
+        }
+
+        .btn-add {
+            background: #2563eb;
+            color: #fff;
+            border-radius: 10px;
+            padding: .7rem 1.1rem;
+            font-weight: 700;
+            font-size: .85rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            transition: .15s;
+        }
+
+        .btn-add:hover {
+            background: #1d4ed8;
+            color: #fff;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 1.1rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,.04);
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: .78rem;
+            font-weight: 700;
+            margin-bottom: .45rem;
+        }
+
+        .stat-value {
+            color: #1a202c;
+            font-size: 1.45rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .table-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,.05);
+        }
+
+        .table-header {
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid #edf2f7;
+            background: #fafbfc;
+        }
+
+        .table-title {
+            font-family: var(--font-display);
+            font-weight: 800;
+            color: #1a202c;
+            font-size: .98rem;
+        }
+
+        .table-subtitle {
+            color: #a0aec0;
+            font-size: .76rem;
+            margin-top: .15rem;
+        }
+
+        .category-table {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .category-table thead th {
+            background: #fff;
+            color: #718096;
+            font-size: .72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            border-bottom: 1px solid #edf2f7;
+            padding: .9rem 1rem;
+            white-space: nowrap;
+        }
+
+        .category-table tbody td {
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+            padding: 1rem;
+            color: #4a5568;
+            font-size: .84rem;
+        }
+
+        .category-table tbody tr:hover {
+            background: #fafbfc;
+        }
+
+        .category-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: #fff7f6;
+            color: #f56960;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .category-name {
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: .2rem;
+        }
+
+        .category-icon-text {
+            color: #718096;
+            font-size: .76rem;
+        }
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            border-radius: 999px;
+            padding: .38rem .7rem;
+            font-size: .72rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .badge-active {
+            background: #ecfdf5;
+            color: #15803d;
+        }
+
+        .badge-passive {
+            background: #fff5f5;
+            color: #c53030;
+        }
+
+        .btn-action {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            display: inline-grid;
+            place-items: center;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #4a5568;
+            text-decoration: none;
+            transition: .15s;
+            margin-right: .25rem;
+            font-size: .85rem;
+        }
+
+        .btn-action:hover {
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+        .btn-update:hover {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #2563eb;
+        }
+
+        .btn-active:hover {
+            background: #ecfdf5;
+            border-color: #bbf7d0;
+            color: #15803d;
+        }
+
+        .btn-passive:hover {
+            background: #fff7ed;
+            border-color: #fed7aa;
+            color: #c2410c;
+        }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+
+        .empty-state {
+            padding: 3rem 1rem;
+            text-align: center;
+            color: #718096;
+        }
+
+        .empty-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            background: #f8fafc;
+            color: #a0aec0;
+            margin: 0 auto 1rem;
+            font-size: 1.8rem;
+        }
+
+        @@media(max-width: 991px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+            }
+        }
+    </style>
+}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Kategori Listesi</h1>
+        <div class="page-subtitle">
+            Tur kategorilerini buradan yönetebilirsiniz.
+        </div>
+    </div>
+
+    <a asp-controller="AdminCategory"
+       asp-action="CreateCategory"
+       class="btn-add">
+        <i class="bi bi-plus-circle"></i>
+        Yeni Kategori Ekle
+    </a>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">Toplam Kategori</div>
+        <div class="stat-value">@totalCategoryCount</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Aktif Kategori</div>
+        <div class="stat-value">@activeCategoryCount</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Pasif Kategori</div>
+        <div class="stat-value">@passiveCategoryCount</div>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-header">
+        <div class="table-title">Kategoriler</div>
+        <div class="table-subtitle">
+            Aktif kategoriler kullanıcı tarafındaki tur listesi sayfasında görüntülenir.
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="category-table">
+                <thead>
+                    <tr>
+                        <th>İkon</th>
+                        <th>Kategori</th>
+                        <th>Durum</th>
+                        <th style="width:220px;">İşlemler</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="category-icon-box">
+                                    @if (!string.IsNullOrWhiteSpace(item.IconUrl))
+                                    {
+                                        <i class="@item.IconUrl"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-map-signs"></i>
+                                    }
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="category-name">@item.CategoryName</div>
+                                <div class="category-icon-text">
+                                    @(string.IsNullOrWhiteSpace(item.IconUrl) ? "İkon belirtilmemiş" : item.IconUrl)
+                                </div>
+                            </td>
+
+                            <td>
+                                @if (item.IsStatus)
+                                {
+                                    <span class="badge-status badge-active">
+                                        <i class="bi bi-check-circle"></i>
+                                        Aktif
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge-status badge-passive">
+                                        <i class="bi bi-x-circle"></i>
+                                        Pasif
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+                                <a asp-controller="AdminCategory"
+                                   asp-action="UpdateCategory"
+                                   asp-route-id="@item.CategoryId"
+                                   class="btn-action btn-update"
+                                   title="Güncelle">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                                @if (item.IsStatus)
+                                {
+                                    <a asp-controller="AdminCategory"
+                                       asp-action="MakeCategoryPassive"
+                                       asp-route-id="@item.CategoryId"
+                                       class="btn-action btn-passive"
+                                       title="Pasif Yap">
+                                        <i class="bi bi-eye-slash"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="AdminCategory"
+                                       asp-action="MakeCategoryActive"
+                                       asp-route-id="@item.CategoryId"
+                                       class="btn-action btn-active"
+                                       title="Aktif Yap">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                }
+
+                                <a asp-controller="AdminCategory"
+                                   asp-action="DeleteCategory"
+                                   asp-route-id="@item.CategoryId"
+                                   class="btn-action btn-delete js-delete-category"
+                                   title="Sil">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="bi bi-grid"></i>
+            </div>
+
+            <h5>Henüz kategori bulunmuyor</h5>
+            <p>Yeni kategori ekleyerek tur kategorilerini oluşturmaya başlayabilirsiniz.</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.js-delete-category').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                const confirmed = confirm('Bu kategoriyi silmek istediğinize emin misiniz?');
+
+                if (!confirmed) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

@@ -1,7 +1,9 @@
-﻿@model GetTourByIdDto
+﻿@model UpdateTourDto
 @{
     ViewData["Title"] = "Tur Güncelle";
     Layout = "~/Views/Shared/_TourLayout.cshtml";
+     var categories = ViewBag.Categories as List<ProjectTravelin.Dtos.CategoryDtos.ResultCategoryDto>
+        ?? new List<ProjectTravelin.Dtos.CategoryDtos.ResultCategoryDto>();
 }
 
 @section Styles {
@@ -669,7 +671,36 @@
                     </div>
                 </div>
             </div>
+            <div class="field-group">
+                <label asp-for="CategoryId" class="field-label">
+                    <i class="bi bi-grid" style="color:#a0aec0;font-size:.85rem;"></i>
+                    Kategori <span class="required">*</span>
+                </label>
 
+                <div class="input-with-icon">
+                    <i class="bi bi-grid input-icon"></i>
+
+                    <select asp-for="CategoryId"
+                            class="form-select"
+                            style="padding-left:2.4rem;">
+                        <option value="">— Kategori seçin —</option>
+
+                        @foreach (var category in categories)
+                        {
+                            <option value="@category.CategoryId">
+                                @category.CategoryName
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="field-hint">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Bu turun hangi kategori altında görüneceğini seçin.
+                </div>
+
+                <span asp-validation-for="CategoryId" class="text-danger-field"></span>
+            </div>
             <!-- KONUM BİLGİLERİ -->
             <div class="form-section">
                 <div class="section-header">

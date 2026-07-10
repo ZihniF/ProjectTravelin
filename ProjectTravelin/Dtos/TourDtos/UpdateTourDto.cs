@@ -13,5 +13,6 @@
         public string ImageUrl { get; set; }
         public string GeminiImageUrl { get; set; }
         public string YoutubeVideoUrl { get; set; }
+        public string CategoryId { get; set; }
     }
 }

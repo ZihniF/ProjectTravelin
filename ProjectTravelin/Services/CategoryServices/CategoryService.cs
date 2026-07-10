@@ -16,19 +16,11 @@ namespace ProjectTravelin.Services.CategoryServices
             var client = new MongoClient(databaseSettings.ConnectionString);
             var database = client.GetDatabase(databaseSettings.DatabaseName);
 
-            _categoryCollection = database.GetCollection<Category>(databaseSettings.CategoryCollectionName);
+            _categoryCollection = database.GetCollection<Category>(
+                databaseSettings.CategoryCollectionName
+            );
 
             _mapper = mapper;
-        }
-
-        public async Task<List<ResultCategoryDto>> GetActiveCategoriesAsync()
-        {
-            var values = await _categoryCollection
-                .Find(x => x.IsStatus == true)
-                .SortBy(x => x.CategoryName)
-                .ToListAsync();
-
-            return _mapper.Map<List<ResultCategoryDto>>(values);
         }
 
         public async Task<List<ResultCategoryDto>> GetAllCategoryAsync()
@@ -41,12 +33,23 @@ namespace ProjectTravelin.Services.CategoryServices
             return _mapper.Map<List<ResultCategoryDto>>(values);
         }
 
+        public async Task<List<ResultCategoryDto>> GetActiveCategoriesAsync()
+        {
+            var values = await _categoryCollection
+                .Find(x => x.IsStatus == true)
+                .SortBy(x => x.CategoryName)
+                .ToListAsync();
+
+            return _mapper.Map<List<ResultCategoryDto>>(values);
+        }
+
         public async Task CreateCategoryAsync(CreateCategoryDto createCategoryDto)
         {
             var value = _mapper.Map<Category>(createCategoryDto);
 
             value.CategoryName = value.CategoryName ?? "";
             value.IconUrl = value.IconUrl ?? "";
+            value.IsStatus = true;
 
             await _categoryCollection.InsertOneAsync(value);
         }
@@ -76,6 +79,16 @@ namespace ProjectTravelin.Services.CategoryServices
                 .FirstOrDefaultAsync();
 
             return _mapper.Map<GetCategoryByIdDto>(value);
+        }
+
+        public async Task ChangeCategoryStatusAsync(string id, bool status)
+        {
+            var filter = Builders<Category>.Filter.Eq(x => x.CategoryId, id);
+
+            var update = Builders<Category>.Update
+                .Set(x => x.IsStatus, status);
+
+            await _categoryCollection.UpdateOneAsync(filter, update);
         }
     }
 }

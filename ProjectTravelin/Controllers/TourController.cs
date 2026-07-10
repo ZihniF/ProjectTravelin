@@ -17,6 +17,7 @@ namespace ProjectTravelin.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateTour(CreateTourDto _createTourDto)
         {
@@ -24,9 +25,21 @@ namespace ProjectTravelin.Controllers
             return RedirectToAction("TourList");
         }
 
-        public async Task<IActionResult> TourList()
+        public async Task<IActionResult> TourList(string categoryId)
         {
-            var values = await _tourService.GetAllTourAsync();
+            ViewBag.SelectedCategoryId = categoryId;
+
+            List<ResultTourDto> values;
+
+            if (!string.IsNullOrEmpty(categoryId))
+            {
+                values = await _tourService.GetToursByCategoryIdAsync(categoryId);
+            }
+            else
+            {
+                values = await _tourService.GetAllTourAsync();
+            }
+
             return View(values);
         }
 

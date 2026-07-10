@@ -22,6 +22,7 @@ namespace ProjectTravelin.Services.TourServices
         {
             var values = _mapper.Map<Tour>(createTourDto);
             await _tourCollection.InsertOneAsync(values);
+            values.CategoryId = values.CategoryId ?? "";
         }
 
         public async Task DeleteTourAsync(string id)
@@ -45,6 +46,7 @@ namespace ProjectTravelin.Services.TourServices
         {
             var values = _mapper.Map<Tour>(updateTourDto);
             await _tourCollection.FindOneAndReplaceAsync(x => x.TourId == updateTourDto.TourId, values);
+            values.CategoryId = values.CategoryId ?? "";
         }
         public async Task<List<ResultTourDto>> GetToursByPageAsync(int page, int pageSize)
         {
@@ -60,6 +62,15 @@ namespace ProjectTravelin.Services.TourServices
         public async Task<long> GetTourCountAsync()
         {
             return await _tourCollection.CountDocumentsAsync(x => true);
+        }
+        public async Task<List<ResultTourDto>> GetToursByCategoryIdAsync(string categoryId)
+        {
+            var values = await _tourCollection
+                .Find(x => x.CategoryId == categoryId)
+                .SortByDescending(x => x.TourDate)
+                .ToListAsync();
+
+            return _mapper.Map<List<ResultTourDto>>(values);
         }
     }
 }

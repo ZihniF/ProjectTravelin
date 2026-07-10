@@ -1,5 +1,9 @@
 @model List<ResultTourDto>
 
+@{
+    var selectedCategoryId = ViewBag.SelectedCategoryId as string;
+}
+
 <section class="trending pt-6 pb-0 bg-lgrey">
     <div class="container">
         <div class="list-results d-flex align-items-center justify-content-between">
@@ -11,11 +15,19 @@
 
             <div class="click-menu d-flex align-items-center justify-content-between">
                 <div class="change-list f-active me-2">
-                    <a href="/Tour/TourList"><i class="fa fa-bars rounded"></i></a>
+                    <a asp-controller="Tour"
+                       asp-action="TourList"
+                       asp-route-categoryId="@selectedCategoryId">
+                        <i class="fa fa-bars rounded"></i>
+                    </a>
                 </div>
 
                 <div class="change-grid me-2">
-                    <a href="/Tour/TourList"><i class="fa fa-th rounded"></i></a>
+                    <a asp-controller="Tour"
+                       asp-action="TourList"
+                       asp-route-categoryId="@selectedCategoryId">
+                        <i class="fa fa-th rounded"></i>
+                    </a>
                 </div>
 
                 <div class="sortby d-flex align-items-center justify-content-between ml-2">
@@ -30,89 +42,124 @@
         </div>
 
         <div class="destination-list">
-            @foreach (var item in Model)
+            @if (Model != null && Model.Any())
             {
-                <div class="trend-full bg-white rounded box-shadow overflow-hidden p-4 mb-4">
-                    <div class="row">
-                        <div class="col-lg-4 col-md-3">
-                            <div class="trend-item2 rounded">
-                                <a href="/Tour/TourDetail/@item.TourId" style="background-image: url(@item.ImageUrl);"></a>
-                                <div class="color-overlay"></div>
+                @foreach (var item in Model)
+                {
+                    <div class="trend-full bg-white rounded box-shadow overflow-hidden p-4 mb-4">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-3">
+                                <div class="trend-item2 rounded">
+                                    <a href="/Tour/TourDetail/@item.TourId" style="background-image: url(@item.ImageUrl);"></a>
+                                    <div class="color-overlay"></div>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="col-lg-5 col-md-6">
-                            <div class="trend-content position-relative text-md-start text-center">
-                                <small>@item.DayNight</small>
+                            <div class="col-lg-5 col-md-6">
+                                <div class="trend-content position-relative text-md-start text-center">
+                                    <small>@item.DayNight</small>
 
-                                <h3 class="mb-1">
-                                    <a href="/Tour/TourDetail/@item.TourId">@item.Title</a>
-                                </h3>
+                                    <h3 class="mb-1">
+                                        <a href="/Tour/TourDetail/@item.TourId">@item.Title</a>
+                                    </h3>
 
-                                <h6 class="theme mb-0">
-                                    <i class="icon-location-pin"></i> @item.City, @item.Country
-                                </h6>
+                                    <h6 class="theme mb-0">
+                                        <i class="icon-location-pin"></i> @item.City, @item.Country
+                                    </h6>
 
-                                <p class="mt-4 mb-0">
-                                    @item.Description
-                                    <br />
-                                    <a href="#">
-                                        <span class="theme">Ücretsiz İptal</span>
+                                    <p class="mt-4 mb-0">
+                                        @item.Description
+                                        <br />
+                                        <a href="#">
+                                            <span class="theme">Ücretsiz İptal</span>
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-md-3">
+                                <div class="trend-content text-md-end text-center">
+                                    <div class="rating">
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                    </div>
+
+                                    <small>200 Değerlendirme</small>
+
+                                    <div class="trend-price my-2">
+                                        <span class="mb-0">Başlangıç</span>
+                                        <h3 class="mb-0">$125</h3>
+                                        <small>Kişi Başı</small>
+                                    </div>
+
+                                    <a href="/Tour/TourDetail/@item.TourId" class="nir-btn">
+                                        Detayları Gör
                                     </a>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3 col-md-3">
-                            <div class="trend-content text-md-end text-center">
-                                <div class="rating">
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
                                 </div>
-
-                                <small>200 Değerlendirme</small>
-
-                                <div class="trend-price my-2">
-                                    <span class="mb-0">Başlangıç</span>
-                                    <h3 class="mb-0">$125</h3>
-                                    <small>Kişi Başı</small>
-                                </div>
-
-                                <a href="/Tour/TourDetail/@item.TourId" class="nir-btn">
-                                    Detayları Gör
-                                </a>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
+
+                @if (ViewBag.TotalPages > 1)
+                {
+                    <div class="text-center mt-4">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <a asp-controller="Tour"
+                               asp-action="TourList"
+                               asp-route-page="@(ViewBag.CurrentPage - 1)"
+                               asp-route-categoryId="@selectedCategoryId"
+                               class="nir-btn mt-2">
+                                <i class="fa fa-long-arrow-alt-left"></i> Önceki
+                            </a>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <a asp-controller="Tour"
+                               asp-action="TourList"
+                               asp-route-page="@i"
+                               asp-route-categoryId="@selectedCategoryId"
+                               class="nir-btn me-1 @(i == ViewBag.CurrentPage ? "active" : "")">
+                                @i
+                            </a>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <a asp-controller="Tour"
+                               asp-action="TourList"
+                               asp-route-page="@(ViewBag.CurrentPage + 1)"
+                               asp-route-categoryId="@selectedCategoryId"
+                               class="nir-btn ms-2">
+                                Sonraki <i class="fa fa-long-arrow-alt-right"></i>
+                            </a>
+                        }
+                    </div>
+                }
             }
-
-            @if (ViewBag.TotalPages > 1)
+            else
             {
-                <div class="text-center mt-4">
-                    @if (ViewBag.CurrentPage > 1)
-                    {
-                        <a href="/Tour/TourList?page=@(ViewBag.CurrentPage - 1)" class="nir-btn mt-2">
-                            <i class="fa fa-long-arrow-alt-left"></i> Önceki
-                        </a>
-                    }
+                <div class="bg-white rounded box-shadow p-5 text-center mt-4">
+                    <div style="font-size:48px;color:#f56960;margin-bottom:15px;">
+                        <i class="fa fa-map-signs"></i>
+                    </div>
 
-                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                    {
-                        <a href="/Tour/TourList?page=@i" class="nir-btn me-1 @(i == ViewBag.CurrentPage ? "active" : "")">
-                            @i
-                        </a>
-                    }
+                    <h4 class="mb-2">Bu kategoriye ait tur bulunamadı</h4>
 
-                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-                    {
-                        <a href="/Tour/TourList?page=@(ViewBag.CurrentPage + 1)" class="nir-btn ms-2">
-                            Sonraki <i class="fa fa-long-arrow-alt-right"></i>
-                        </a>
-                    }
+                    <p class="mb-4" style="color:#777;">
+                        Seçtiğiniz kategoriye ait aktif tur bulunmuyor. Diğer turları görüntüleyebilirsiniz.
+                    </p>
+
+                    <a asp-controller="Tour"
+                       asp-action="TourList"
+                       class="nir-btn">
+                        Tüm Turları Gör
+                    </a>
                 </div>
             }
         </div>

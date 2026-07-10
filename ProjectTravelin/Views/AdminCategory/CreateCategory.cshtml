@@ -1,0 +1,353 @@
+@model ProjectTravelin.Dtos.CategoryDtos.CreateCategoryDto
+
+@{
+    ViewData["Title"] = "Yeni Kategori Ekle";
+    Layout = "~/Views/Shared/_TourLayout.cshtml";
+}
+
+@section Styles {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+    <style>
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1a202c;
+            letter-spacing: -.03em;
+            line-height: 1.1;
+        }
+
+        .page-subtitle {
+            color: #718096;
+            font-size: .875rem;
+            margin-top: .4rem;
+        }
+
+        .btn-back {
+            background: #fff;
+            border: 1.5px solid #e2e8f0;
+            color: #4a5568;
+            border-radius: 10px;
+            padding: .6rem 1rem;
+            font-weight: 700;
+            font-size: .85rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            transition: .15s;
+        }
+
+            .btn-back:hover {
+                background: #f8fafc;
+                color: #2563eb;
+                text-decoration: none;
+            }
+
+        .form-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.05);
+            overflow: hidden;
+        }
+
+        .form-card-header {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid #edf2f7;
+            background: #fafbfc;
+        }
+
+        .form-card-title {
+            font-family: var(--font-display);
+            font-weight: 800;
+            color: #1a202c;
+            font-size: 1rem;
+        }
+
+        .form-card-subtitle {
+            color: #a0aec0;
+            font-size: .78rem;
+            margin-top: .2rem;
+        }
+
+        .form-card-body {
+            padding: 1.5rem;
+        }
+
+        .form-group-custom {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-label-custom {
+            display: block;
+            font-size: .78rem;
+            font-weight: 800;
+            color: #2d3748;
+            margin-bottom: .5rem;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            height: 46px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 11px;
+            padding: .65rem .85rem;
+            font-size: .9rem;
+            color: #1a202c;
+            outline: none;
+            transition: .15s;
+            background: #fff;
+        }
+
+            .form-control-custom:focus {
+                border-color: #2563eb;
+                box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+            }
+
+        .icon-preview-box {
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: .85rem;
+            margin-top: .65rem;
+        }
+
+        .icon-preview {
+            width: 42px;
+            height: 42px;
+            border-radius: 11px;
+            display: grid;
+            place-items: center;
+            background: #fff7f6;
+            color: #f56960;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .hint-text {
+            color: #718096;
+            font-size: .76rem;
+            line-height: 1.5;
+        }
+
+        .example-icons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            margin-top: .8rem;
+        }
+
+        .example-icon {
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            border-radius: 999px;
+            padding: .35rem .65rem;
+            font-size: .75rem;
+            font-weight: 700;
+            color: #4a5568;
+            cursor: pointer;
+            transition: .15s;
+        }
+
+            .example-icon:hover {
+                background: #eff6ff;
+                border-color: #bfdbfe;
+                color: #2563eb;
+            }
+
+        .text-danger-field {
+            font-size: .73rem;
+            color: #e53e3e;
+            margin-top: .35rem;
+            display: block;
+        }
+
+            .text-danger-field.field-validation-error::before {
+                content: "⚠ ";
+                font-weight: 700;
+            }
+
+        .form-actions {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .btn-save {
+            border: none;
+            background: #2563eb;
+            color: #fff;
+            border-radius: 11px;
+            padding: .75rem 1.2rem;
+            font-weight: 800;
+            font-size: .9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            transition: .15s;
+        }
+
+            .btn-save:hover {
+                background: #1d4ed8;
+                transform: translateY(-1px);
+            }
+
+        .btn-cancel {
+            background: #fff;
+            border: 1.5px solid #e2e8f0;
+            color: #4a5568;
+            border-radius: 11px;
+            padding: .72rem 1.1rem;
+            font-weight: 800;
+            font-size: .9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+            .btn-cancel:hover {
+                background: #f8fafc;
+                color: #2563eb;
+                text-decoration: none;
+            }
+    </style>
+}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Yeni Kategori Ekle</h1>
+        <div class="page-subtitle">
+            Tur listesi sayfasında görüntülenecek yeni kategori oluşturun.
+        </div>
+    </div>
+
+    <a asp-controller="AdminCategory"
+       asp-action="CategoryList"
+       class="btn-back">
+        <i class="bi bi-arrow-left"></i>
+        Listeye Dön
+    </a>
+</div>
+
+<div class="form-card">
+    <div class="form-card-header">
+        <div class="form-card-title">Kategori Bilgileri</div>
+        <div class="form-card-subtitle">
+            IconUrl alanına Font Awesome class değeri yazabilirsiniz. Örnek: fa fa-tree
+        </div>
+    </div>
+
+    <div class="form-card-body">
+        <form method="post"
+              asp-controller="AdminCategory"
+              asp-action="CreateCategory">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="IsStatus" value="true" />
+
+            <div class="form-group-custom">
+                <label asp-for="CategoryName" class="form-label-custom">Kategori Adı</label>
+                <input asp-for="CategoryName"
+                       class="form-control-custom"
+                       placeholder="Örn: Doğa Turları" />
+                <span asp-validation-for="CategoryName" class="text-danger-field"></span>
+            </div>
+
+            <div class="form-group-custom">
+                <label asp-for="IconUrl" class="form-label-custom">İkon Class</label>
+                <input asp-for="IconUrl"
+                       id="IconUrlInput"
+                       class="form-control-custom"
+                       placeholder="Örn: fa fa-tree" />
+
+                <div class="icon-preview-box">
+                    <div class="icon-preview">
+                        <i id="IconPreview" class="fa fa-map-signs"></i>
+                    </div>
+
+                    <div>
+                        <div class="hint-text">
+                            Bu alan kullanıcı tarafındaki kategori kartında ikon olarak gösterilir.
+                        </div>
+                        <div class="hint-text">
+                            Örnek ikonlar aşağıdan seçilebilir.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-icons">
+                    <button type="button" class="example-icon" data-icon="fa fa-university">Kültür</button>
+                    <button type="button" class="example-icon" data-icon="fa fa-tree">Doğa</button>
+                    <button type="button" class="example-icon" data-icon="fa fa-globe">Yurt Dışı</button>
+                    <button type="button" class="example-icon" data-icon="fa fa-clock-o">Günübirlik</button>
+                    <button type="button" class="example-icon" data-icon="fa fa-sun-o">Deniz</button>
+                    <button type="button" class="example-icon" data-icon="fa fa-cutlery">Gastronomi</button>
+                    <button type="button" class="example-icon" data-icon="fa fa-snowflake-o">Kış</button>
+                    <button type="button" class="example-icon" data-icon="fa fa-heart">Balayı</button>
+                </div>
+
+                <span asp-validation-for="IconUrl" class="text-danger-field"></span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-save">
+                    <i class="bi bi-check-lg"></i>
+                    Kaydet
+                </button>
+
+                <a asp-controller="AdminCategory"
+                   asp-action="CategoryList"
+                   class="btn-cancel">
+                    <i class="bi bi-x-lg"></i>
+                    Vazgeç
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const iconInput = document.getElementById('IconUrlInput');
+        const iconPreview = document.getElementById('IconPreview');
+
+        function updateIconPreview() {
+            const value = iconInput.value.trim();
+
+            if (value.length > 0) {
+                iconPreview.className = value;
+            } else {
+                iconPreview.className = 'fa fa-map-signs';
+            }
+        }
+
+        iconInput.addEventListener('input', updateIconPreview);
+
+        document.querySelectorAll('.example-icon').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                iconInput.value = this.dataset.icon;
+                updateIconPreview();
+            });
+        });
+
+        updateIconPreview();
+    </script>
+}

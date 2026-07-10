@@ -4,9 +4,9 @@ namespace ProjectTravelin.Services.CategoryServices
 {
     public interface ICategoryService
     {
-        Task<List<ResultCategoryDto>> GetActiveCategoriesAsync();
-
         Task<List<ResultCategoryDto>> GetAllCategoryAsync();
+
+        Task<List<ResultCategoryDto>> GetActiveCategoriesAsync();
 
         Task CreateCategoryAsync(CreateCategoryDto createCategoryDto);
 
@@ -15,5 +15,7 @@ namespace ProjectTravelin.Services.CategoryServices
         Task DeleteCategoryAsync(string id);
 
         Task<GetCategoryByIdDto> GetCategoryByIdAsync(string id);
+
+        Task ChangeCategoryStatusAsync(string id, bool status);
     }
 }

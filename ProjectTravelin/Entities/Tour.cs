@@ -19,5 +19,6 @@ namespace ProjectTravelin.Entities
 
         public string GeminiImageUrl { get; set; }
         public string YoutubeVideoUrl { get; set; }
+        public string CategoryId { get; set; }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using ProjectTravelin.Dtos.TourDtos;
 using ProjectTravelin.Services.TourServices;
 
-namespace ProjectTravelin.ViewComponents.TourViewComponents
+namespace ProjectTravelin.ViewComponents
 {
-    public class _TourListComponentPartial:ViewComponent
+    [ViewComponent(Name = "_TourListComponentPartial")]
+    public class _TourListComponentPartial : ViewComponent
     {
         private readonly ITourService _tourService;
 
@@ -13,21 +14,51 @@ namespace ProjectTravelin.ViewComponents.TourViewComponents
             _tourService = tourService;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(int page =1)
+        public async Task<IViewComponentResult> InvokeAsync(int page = 1, string categoryId = "")
         {
             int pageSize = 4;
-            var values = await _tourService.GetAllTourAsync();
-            var totalCount = values.Count();
-            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
-            var pageValues = values
+            if (page <= 0)
+            {
+                page = 1;
+            }
+
+            List<ResultTourDto> values;
+
+            if (!string.IsNullOrWhiteSpace(categoryId))
+            {
+                values = await _tourService.GetToursByCategoryIdAsync(categoryId);
+            }
+            else
+            {
+                values = await _tourService.GetAllTourAsync();
+            }
+
+            values = values ?? new List<ResultTourDto>();
+
+            int totalCount = values.Count;
+            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            if (totalPages == 0)
+            {
+                totalPages = 1;
+            }
+
+            if (page > totalPages)
+            {
+                page = totalPages;
+            }
+
+            var pagedValues = values
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
+
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
+            ViewBag.SelectedCategoryId = categoryId;
 
-            return View(pageValues);
+            return View(pagedValues);
         }
     }
 }

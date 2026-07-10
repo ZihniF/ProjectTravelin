@@ -2,8 +2,10 @@
 @{
     ViewData["Title"] = "Yeni Tur Ekle";
     Layout = "~/Views/Shared/_TourLayout.cshtml";
-}
 
+    var categories = ViewBag.Categories as List<ProjectTravelin.Dtos.CategoryDtos.ResultCategoryDto>
+        ?? new List<ProjectTravelin.Dtos.CategoryDtos.ResultCategoryDto>();
+}
 @section Styles {
     <style>
         /* ── PAGE HEADER ─────────────────────────────── */
@@ -645,6 +647,38 @@
                     </div>
                 </div>
                 <div class="section-body">
+                    <!-- Kategori -->
+                    <div class="field-group">
+                        <label asp-for="CategoryId" class="field-label">
+                            <i class="bi bi-grid" style="color:#a0aec0;font-size:.85rem;"></i>
+                            Kategori <span class="required">*</span>
+                        </label>
+
+                        <div class="input-with-icon">
+                            <i class="bi bi-grid input-icon"></i>
+
+                            <select asp-for="CategoryId"
+                                    class="form-select"
+                                    style="padding-left:2.4rem;"
+                                    id="categorySelect">
+                                <option value="">— Kategori seçin —</option>
+
+                                @foreach (var category in categories)
+                                {
+                                    <option value="@category.CategoryId">
+                                        @category.CategoryName
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="field-hint">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Turun kullanıcı tarafında hangi kategori altında listeleneceğini seçin.
+                        </div>
+
+                        <span asp-validation-for="CategoryId" class="text-danger-field"></span>
+                    </div>
                     <!-- Tur Başlığı -->
                     <div class="field-group">
                         <label asp-for="Title" class="field-label">
@@ -964,6 +998,10 @@
                             <span class="value" id="sumTitle" style="max-width:150px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span>
                         </div>
                         <div class="summary-row">
+                            <span class="label">Kategori</span>
+                            <span class="value" id="sumCategory">—</span>
+                        </div>
+                        <div class="summary-row">
                             <span class="label">Ülke / Şehir</span>
                             <span class="value" id="sumLocation">—</span>
                         </div>
@@ -1178,8 +1216,14 @@
 
         // ── LIVE SUMMARY ──────────────────────────────
          function updateSummary() {
-             const title    = document.getElementById('tourTitleInput').value.trim();
-             const country  = document.getElementById('countrySelect').value;
+               const title = document.getElementById('tourTitleInput').value.trim();
+
+                 const categorySelect = document.getElementById('categorySelect');
+              const categoryText = categorySelect && categorySelect.selectedIndex > 0
+                  ? categorySelect.options[categorySelect.selectedIndex].text
+                 : '';
+
+              const country = document.getElementById('countrySelect').value;
                 const city     = document.getElementById('cityInput')?.value.trim();
                 const date     = document.getElementById('tourDateInput').value;
               const duration = document.getElementById('dayNightHidden').value;
@@ -1189,6 +1233,7 @@
              const videoUrl  = document.getElementById('youtubeVideoUrlInput')?.value.trim();
 
               document.getElementById('sumTitle').textContent    = title    || '—';
+              document.getElementById('sumCategory').textContent = categoryText || '—';
              document.getElementById('sumLocation').textContent = (country && city) ? country + ' / ' + city : (country || city || '—');
              document.getElementById('sumDate').textContent     = date ? formatDate(date) : '—';
               document.getElementById('sumDuration').textContent = duration  || '—';
@@ -1211,7 +1256,7 @@
             return d + '.' + m + '.' + y;
         }
 
-        ['tourTitleInput','countrySelect','cityInput','tourDateInput','capacityInput','geminiImageUrlInput','youtubeVideoUrlInput'].forEach(function(id) {
+        ['tourTitleInput','categorySelect','countrySelect','cityInput','tourDateInput','capacityInput','geminiImageUrlInput','youtubeVideoUrlInput'].forEach(function(id) {
             const el = document.getElementById(id);
             if (el) el.addEventListener('input', updateSummary);
         });

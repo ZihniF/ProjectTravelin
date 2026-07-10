@@ -1,6 +1,20 @@
 @{
     Layout = null;
-    int currentPage = int.Parse(Context.Request.Query["page"].FirstOrDefault() ?? "1");
+
+    var pageQuery = Context.Request.Query["page"].FirstOrDefault();
+    int currentPage = 1;
+
+    if (!string.IsNullOrEmpty(pageQuery))
+    {
+        int.TryParse(pageQuery, out currentPage);
+
+        if (currentPage <= 0)
+        {
+            currentPage = 1;
+        }
+    }
+
+    var selectedCategoryId = Context.Request.Query["categoryId"].FirstOrDefault() ?? "";
 }
 
 <!DOCTYPE html>
@@ -11,7 +25,7 @@
 
 @await Component.InvokeAsync("_TourListCategoryComponentPartial")
    
-@await Component.InvokeAsync("_TourListComponentPartial",new{page=currentPage})
+@await Component.InvokeAsync("_TourListComponentPartial", new { page = currentPage, categoryId = selectedCategoryId })
 
 @await Component.InvokeAsync("_TourFooterComponentPartial")
 
